@@ -1,4 +1,4 @@
-import AuthLayout from "@/layouts/auth-layout";
+import GlobalLayout from "@/layouts/global-layout";
 import ForgetPasswordPage from "@/pages/forget-password-page";
 import IndexPage from "@/pages/index-page";
 import LoginPage from "@/pages/login-page";
@@ -11,17 +11,17 @@ import { Route, Routes } from "react-router";
 export default function RootRouter() {
   return (
     <Routes>
-      <Route element={<AuthLayout />}>
+      <Route element={<GlobalLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
+
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/post/:postId" element={<PostDetailPage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
-
-      <Route path="/" element={<IndexPage />} />
-      <Route path="/post/:postId" element={<PostDetailPage />} />
-      <Route path="/profile/:userId" element={<ProfilePage />} />
-
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
