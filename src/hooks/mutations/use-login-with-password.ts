@@ -1,4 +1,4 @@
-import { loginWithPassword } from "@/api/auth";
+import { loginWithPassword } from "@/api/auth-api";
 import type { UseMutationCallback } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 

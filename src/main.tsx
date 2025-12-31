@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      retry: false,
       staleTime: 0,
       gcTime: 5 * 60 * 1000,
       refetchOnMount: true,
