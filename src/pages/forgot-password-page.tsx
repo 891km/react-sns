@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Spinner } from "@/components/ui/spinner";
-import { useRequestResetPasswordEmail } from "@/hooks/mutations/use-request-reset-password-email";
+import { useRequestResetPasswordEmail } from "@/hooks/mutations/auth/use-request-reset-password-email";
 import { toast } from "sonner";
 import { getAuthErrorMessageKo } from "@/lib/error-code-ko";
 

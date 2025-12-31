@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
-import { useUpdatePassword } from "@/hooks/mutations/use-update-password";
+import { useUpdatePassword } from "@/hooks/mutations/auth/use-update-password";
 import { getAuthErrorMessageKo } from "@/lib/error-code-ko";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";

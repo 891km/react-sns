@@ -4,7 +4,7 @@ import logo from "@/assets/logo.png";
 import defaultProfile from "@/assets/default-profile.png";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { useSession } from "@/store/session";
+import { useSessionUserId } from "@/store/session";
 
 const container = "mx-auto w-full max-w-3xl px-4";
 
@@ -14,8 +14,7 @@ const headerActionButton =
   "hover:bg-muted flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full";
 
 export default function GlobalLayout() {
-  const session = useSession();
-  const currentUserId = session?.user.id;
+  const currentUserId = useSessionUserId();
 
   return (
     <div className="flex min-h-screen flex-col">

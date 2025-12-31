@@ -33,6 +33,11 @@ export const useSession = () => {
   return session;
 };
 
+export const useSessionUserId = () => {
+  const userId = useSessionStore((store) => store.session?.user.id);
+  return userId;
+};
+
 export const useIsSessionLoaded = () => {
   const isSessionLoaded = useSessionStore((store) => store.isLoaded);
   return isSessionLoaded;

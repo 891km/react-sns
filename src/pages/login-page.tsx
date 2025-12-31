@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
-import { useLoginWithPassword } from "@/hooks/mutations/use-login-with-password";
-import { useLoginWithOAuth } from "@/hooks/mutations/use-login-with-oauth";
+import { useLoginWithPassword } from "@/hooks/mutations/auth/use-login-with-password";
+import { useLoginWithOAuth } from "@/hooks/mutations/auth/use-login-with-oauth";
 import { Button } from "@/components/ui/button";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import githubLogo from "@/assets/github-mark.svg";

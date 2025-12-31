@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Spinner } from "@/components/ui/spinner";
 import { ROUTES } from "@/constants/routes";
-import { useSignupWithPassword } from "@/hooks/mutations/use-signup-with-password";
+import { useSignupWithPassword } from "@/hooks/mutations/auth/use-signup-with-password";
 import { getAuthErrorMessageKo } from "@/lib/error-code-ko";
 import { useState } from "react";
 import { Link } from "react-router";
