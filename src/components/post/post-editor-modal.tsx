@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { useCreatePost } from "@/hooks/mutations/post/use-create-post";
+import { cn } from "@/lib/utils";
+import { useOpenAlertModal } from "@/store/alert-modal";
 import { usePostEditorModal } from "@/store/post-editor-modal";
 import { useSessionUserId } from "@/store/session";
 import { DialogDescription } from "@radix-ui/react-dialog";
@@ -27,6 +29,7 @@ type ImageItem = {
 };
 
 export default function PostEditorModal() {
+  const MAX_COTENT_LENGTH = 800;
   const [content, setContent] = useState("");
   const [imageItems, setImageItems] = useState<ImageItem[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -34,6 +37,7 @@ export default function PostEditorModal() {
 
   const userId = useSessionUserId();
   const { isOpen, close } = usePostEditorModal();
+  const openAlertModal = useOpenAlertModal();
   const { mutate: createPost, isPending: isCreatePostPending } = useCreatePost({
     onSuccess: () => {
       close();
@@ -46,15 +50,16 @@ export default function PostEditorModal() {
 
   const handleCloseModal = () => {
     if (!isEmptyContent || !isEmptyImages) {
-      const confirmed = window.confirm(
-        "게시물을 삭제하시겠어요?\n작성 중인 내용은 저장되지 않습니다.",
-      );
-      if (confirmed) {
-        close();
-      }
-    } else {
-      close();
+      openAlertModal({
+        title: "게시물 작성이 마무리 되지 않았습니다",
+        description: "이 화면에서 나가면 작성 중인 내용이 사라집니다.",
+        onAction: () => {
+          close();
+        },
+      });
+      return;
     }
+    close();
   };
 
   const handleCreatePostClick = () => {
@@ -118,15 +123,28 @@ export default function PostEditorModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-1 flex-col gap-4 overflow-auto">
-          <textarea
-            ref={textareaRef}
-            className="min-h-30 w-full resize-none p-2 focus:outline-none"
-            placeholder="나누고 싶은 이야기가 있나요?"
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            disabled={isCreatePostPending}
-          />
+          <div className="flex flex-col p-2">
+            <textarea
+              ref={textareaRef}
+              className="min-h-30 w-full resize-none focus:outline-none"
+              placeholder="나누고 싶은 이야기가 있나요?"
+              name="content"
+              value={content}
+              maxLength={MAX_COTENT_LENGTH}
+              onChange={(e) => setContent(e.target.value)}
+              disabled={isCreatePostPending}
+            />
+            <span
+              className={cn(
+                "ml-auto text-sm",
+                content.length === MAX_COTENT_LENGTH
+                  ? "text-red-400"
+                  : "text-muted-foreground",
+              )}
+            >
+              {content.length} / {MAX_COTENT_LENGTH}
+            </span>
+          </div>
           {imageItems.length > 0 && (
             <Carousel>
               <CarouselContent>
