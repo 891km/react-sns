@@ -94,6 +94,7 @@ export default function PostEditorModal() {
         (prevImage) => prevImage.previewUrl !== imageItem.previewUrl,
       ),
     );
+    URL.revokeObjectURL(imageItem.previewUrl);
   };
 
   useEffect(() => {
@@ -103,7 +104,12 @@ export default function PostEditorModal() {
   }, [content]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      imageItems.forEach((imageItem) => {
+        URL.revokeObjectURL(imageItem.previewUrl);
+      });
+      return;
+    }
     textareaRef.current?.focus();
     setContent("");
     setImageItems([]);
