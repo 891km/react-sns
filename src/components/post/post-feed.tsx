@@ -1,4 +1,4 @@
-import { useFetchInfinitePosts } from "@/hooks/queries/use-fetch-infinite-posts";
+import { useFetchInfinitePostIds } from "@/hooks/queries/use-fetch-infinite-post-ids";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import ErrorMessage from "@/components/status/error-message";
@@ -6,8 +6,13 @@ import Loader from "@/components/status/loader";
 import PostItem from "@/components/post/post-item";
 
 export default function PostFeed() {
-  const { data, error, isPending, fetchNextPage, isFetchingNextPage } =
-    useFetchInfinitePosts();
+  const {
+    data: postIds,
+    error,
+    isPending,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useFetchInfinitePostIds();
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -21,8 +26,8 @@ export default function PostFeed() {
   return (
     <>
       <div className="flex flex-col">
-        {data.pages.map((page) =>
-          page.map((post) => <PostItem key={post.id} post={post} />),
+        {postIds.pages.map((page) =>
+          page.map((postId) => <PostItem key={postId} postId={postId} />),
         )}
       </div>
       {isFetchingNextPage && (
