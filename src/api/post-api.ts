@@ -2,26 +2,57 @@ import { getUploadedImageUrl } from "@/api/image-api";
 import supabase from "@/lib/supabase";
 import type { PostEntity } from "@/types/types";
 
-export async function fetchPosts({ from, to }: { from: number; to: number }) {
-  const { data, error } = await supabase
+export async function fetchPosts({
+  from,
+  to,
+  userId,
+}: {
+  from: number;
+  to: number;
+  userId?: string;
+}) {
+  const query = supabase
     .from("post")
-    .select("*, author: profile!author_id (*)")
+    .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
     .order("created_at", { ascending: false })
     .range(from, to);
 
+  if (userId) {
+    query.eq("like.user_id", userId);
+  }
+
+  const { data, error } = await query;
+
   if (error) throw error;
-  return data;
+  return data.map((post) => ({
+    ...post,
+    isLiked: userId ? post.isLiked && post.isLiked.length > 0 : false,
+  }));
 }
 
-export async function fetchPostById(postId: number) {
-  const { data, error } = await supabase
+export async function fetchPostById({
+  postId,
+  userId,
+}: {
+  postId: number;
+  userId?: string;
+}) {
+  const query = supabase
     .from("post")
-    .select("*, author: profile!author_id (*)")
-    .eq("id", postId)
-    .single();
+    .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
+    .eq("id", postId);
+
+  if (userId) {
+    query.eq("like.user_id", userId);
+  }
+
+  const { data, error } = await query.single();
 
   if (error) throw error;
-  return data;
+  return {
+    ...data,
+    isLiked: userId ? data.isLiked && data.isLiked.length > 0 : false,
+  };
 }
 
 export async function createPost(content: string) {
@@ -98,4 +129,19 @@ export async function createPostWithImages({
     await deletePost(post.id);
     throw error;
   }
+}
+
+export async function togglePostLike({
+  postId,
+  userId,
+}: {
+  postId: number;
+  userId: string;
+}) {
+  const { data, error } = await supabase.rpc("toggle_post_like", {
+    p_post_id: postId,
+    p_user_id: userId,
+  });
+  if (error) throw error;
+  return data;
 }

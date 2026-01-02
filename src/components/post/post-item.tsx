@@ -39,6 +39,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useTogglePostLike } from "@/hooks/mutations/post/use-toggle-post-like";
+import { getLikeErrorMessageKo } from "@/lib/error-code-ko";
 
 export default function PostItem({ postId }: { postId: number }) {
   const { data: post, isPending, error } = useFetchPostById({ postId });
@@ -54,11 +56,11 @@ export default function PostItem({ postId }: { postId: number }) {
   );
 
   return (
-    <div className="flex flex-col gap-6 px-4 py-7 not-last:border-b">
+    <div className="flex flex-col gap-6 px-1 py-7 not-last:border-b">
       <div className="flex items-center justify-between">
         <ProfileInfo
           variant="post"
-          userId={post.author_id}
+          authorId={post.author_id}
           dateText={formatTimeAgo(post.created_at)}
         ></ProfileInfo>
 
@@ -112,7 +114,11 @@ export default function PostItem({ postId }: { postId: number }) {
       </Link>
 
       <div className="flex gap-2">
-        <LikeButton likeCount={post.like_count} />
+        <LikeButton
+          postId={post.id}
+          likeCount={post.like_count}
+          isLiked={post.isLiked}
+        />
         <CommentButton />
       </div>
     </div>
@@ -238,10 +244,30 @@ function DeletePostButton({ postId }: { postId: number }) {
   );
 }
 
-function LikeButton({ likeCount }: { likeCount: number }) {
+function LikeButton({
+  postId,
+  likeCount,
+  isLiked,
+}: {
+  postId: number;
+  likeCount: number;
+  isLiked: boolean;
+}) {
+  const userId = useSessionUserId();
+
+  const { mutate: togglePostLike } = useTogglePostLike({
+    onError: (error) => {
+      toast.error(getLikeErrorMessageKo(error));
+    },
+  });
+
+  const handleLikeClick = () => {
+    togglePostLike({ postId, userId: userId! });
+  };
+
   return (
-    <Button variant="outline">
-      <HeartIcon className="h-4 w-4" />
+    <Button variant="outline" onClick={handleLikeClick}>
+      <HeartIcon className={cn("h-4 w-4", isLiked ? "fill-current" : "")} />
       <span>{likeCount}</span>
     </Button>
   );
