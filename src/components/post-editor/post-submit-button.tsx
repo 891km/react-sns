@@ -13,7 +13,7 @@ export default function PostSubmitButton() {
   const userId = useSessionUserId();
   const { isEdit, postId, isPending, closeModal } = usePostEditor();
   const { content, isEmptyContent, isContentChanged } = usePostContent();
-  const { imageItems } = usePostImages();
+  const { imageItems, isEmptyImages } = usePostImages();
 
   const { mutate: createPost } = useCreatePost({
     onSuccess: () => {
@@ -37,7 +37,7 @@ export default function PostSubmitButton() {
 
   const handleCreatePostClick = () => {
     if (isEdit) return;
-    if (isEmptyContent || !userId) return;
+    if ((isEmptyContent && isEmptyImages) || !userId) return;
     createPost({
       content,
       imageFiles: imageItems.map((imageItem) => imageItem.file),
@@ -47,7 +47,7 @@ export default function PostSubmitButton() {
 
   const handleUpdatePostClick = () => {
     if (!isEdit) return;
-    if (isEmptyContent || !userId || !isContentChanged) return;
+    if (!userId || !isContentChanged) return;
 
     updatePost({
       id: postId,
@@ -66,7 +66,10 @@ export default function PostSubmitButton() {
           수정하기
         </Button>
       ) : (
-        <Button onClick={handleCreatePostClick} disabled={isPending}>
+        <Button
+          onClick={handleCreatePostClick}
+          disabled={isPending || (isEmptyContent && isEmptyImages)}
+        >
           {isPending && <Spinner />}
           게시하기
         </Button>

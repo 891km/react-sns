@@ -37,6 +37,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function PostItem({ postId }: { postId: number }) {
   const { data: post, isPending, error } = useFetchPostById({ postId });
@@ -93,34 +95,20 @@ export default function PostItem({ postId }: { postId: number }) {
         to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
         className="flex flex-col gap-4"
       >
-        <p className="text-base/6.5 whitespace-pre-line">
-          {!isExtended ? (
-            <>
-              {post.content.slice(0, LIMIT_CONTENT_LENGTH)}...
-              <ExtendContentButton setIsExtended={setIsExtended} />
-            </>
-          ) : (
-            <>{post.content}</>
-          )}
-        </p>
-
-        {post.image_urls && (
-          <Carousel>
-            <CarouselContent>
-              {post.image_urls.map((imageUrl, index) => (
-                <CarouselItem key={imageUrl} className="basis-auto">
-                  <div className="relative h-64 w-fit flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border">
-                    <img
-                      src={imageUrl}
-                      alt={`게시된 이미지 ${index}`}
-                      className="h-full w-auto object-contain"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+        {post.content && (
+          <p className="text-base/6.5 whitespace-pre-line">
+            {!isExtended ? (
+              <>
+                {post.content.slice(0, LIMIT_CONTENT_LENGTH)}...
+                <ExtendContentButton setIsExtended={setIsExtended} />
+              </>
+            ) : (
+              <>{post.content}</>
+            )}
+          </p>
         )}
+
+        {post.image_urls && <ImageContents imageUrls={post.image_urls} />}
       </Link>
 
       <div className="flex gap-2">
@@ -128,6 +116,48 @@ export default function PostItem({ postId }: { postId: number }) {
         <CommentButton />
       </div>
     </div>
+  );
+}
+
+// --- components
+function ImageContents({ imageUrls }: { imageUrls: string[] }) {
+  const [isLoadedImages, setIsLoadedImages] = useState<boolean[]>(
+    new Array(imageUrls.length).fill(false),
+  );
+  const handleSetIsLoadedImages = (index: number) => {
+    setIsLoadedImages((prev) => {
+      const loaded = [...prev];
+      loaded[index] = true;
+      return loaded;
+    });
+  };
+
+  return (
+    <Carousel>
+      <CarouselContent>
+        {imageUrls.map((imageUrl, index) => (
+          <CarouselItem key={imageUrl} className="basis-auto">
+            <div className="relative h-64 w-fit flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border">
+              {!isLoadedImages[index] && (
+                <div className="aspect-square h-full">
+                  <Skeleton className="h-full w-full" />
+                </div>
+              )}
+              <img
+                src={imageUrl}
+                alt={`게시된 이미지 ${index}`}
+                loading="lazy"
+                className={cn(
+                  "h-full w-auto object-contain transition-opacity duration-300",
+                  isLoadedImages[index] ? "opacity-100" : "opacity-50",
+                )}
+                onLoad={() => handleSetIsLoadedImages(index)}
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }
 
@@ -144,7 +174,7 @@ function SharePostButton({ postId }: { postId: number }) {
 
   return (
     <button
-      className="flex items-center justify-center gap-2.5"
+      className="flex h-full w-full cursor-pointer items-center gap-2.5"
       onClick={handleSharePostClick}
     >
       <Share2 className="h-2 w-2" />
@@ -166,7 +196,7 @@ function EditPostButton({ post }: { post: PostWithAuthor }) {
 
   return (
     <button
-      className="flex items-center justify-center gap-2.5"
+      className="flex h-full w-full cursor-pointer items-center gap-2.5"
       onClick={handleEditPostClick}
     >
       <Pencil />
@@ -198,7 +228,7 @@ function DeletePostButton({ postId }: { postId: number }) {
     <>
       {isPending && <AppLoader />}
       <button
-        className="flex items-center justify-center gap-2.5"
+        className="flex h-full w-full cursor-pointer items-center gap-2.5"
         onClick={handleDeletePostClick}
       >
         <Trash2 />
