@@ -24,7 +24,7 @@ export default function PostTextarea() {
     <div className="flex flex-col gap-2 p-2">
       <textarea
         ref={textareaRef}
-        className="min-h-30 w-full resize-none focus:outline-none"
+        className="min-h-30 w-full resize-none whitespace-pre-line focus:outline-none"
         placeholder="나누고 싶은 이야기가 있나요?"
         name="content"
         value={content}
