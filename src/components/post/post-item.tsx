@@ -1,25 +1,48 @@
+import { useState } from "react";
+import { Link } from "react-router";
+import { toast } from "sonner";
+import {
+  Ellipsis,
+  HeartIcon,
+  MessageSquare,
+  Pencil,
+  Share2,
+  Trash2,
+} from "lucide-react";
+
+import { formatTimeAgo } from "@/lib/time";
+import type { PostWithAuthor } from "@/types/types";
+import { ROUTES } from "@/constants/routes";
+import { TOAST_MESSAGES_POST } from "@/constants/toast-messages";
+
+import { useSessionUserId } from "@/store/session";
+import { useOpenAlertModal } from "@/store/alert-modal";
+import { useOpenEditPostEditorModal } from "@/store/post-editor-modal";
+import { useFetchPostById } from "@/hooks/queries/use-fetch-post-by-id";
+import { useDeletePost } from "@/hooks/mutations/post/use-delete-post";
+
 import ProfileInfo from "@/components/profile/profile-info";
+import AppLoader from "@/components/status/app-loader";
+import Loader from "@/components/status/loader";
+import ErrorMessage from "@/components/status/error-message";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { ROUTES } from "@/constants/routes";
-import { useDeletePost } from "@/hooks/mutations/post/use-delete-post";
-import { formatTimeAgo } from "@/lib/time";
-import { useSessionUserId } from "@/store/session";
-import type { PostWithAuthor } from "@/types/types";
-import { HeartIcon, MessageSquare } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
-import { toast } from "sonner";
-import { useOpenAlertModal } from "@/store/alert-modal";
-import AppLoader from "@/components/status/app-loader";
-import { useOpenEditPostEditorModal } from "../../store/post-editor-modal";
-import { TOAST_MESSAGES_POST } from "@/constants/toast-messages";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export default function PostItem({ post }: { post: PostWithAuthor }) {
+export default function PostItem({ postId }: { postId: number }) {
+  const { data: post, isPending, error } = useFetchPostById({ postId });
+  if (error) return <ErrorMessage />;
+  if (isPending) return <Loader />;
+
   const userId = useSessionUserId();
   const isCurrentUserPost = post.author_id === userId;
   const LIMIT_CONTENT_LENGTH = 180;
@@ -37,19 +60,40 @@ export default function PostItem({ post }: { post: PostWithAuthor }) {
           dateText={formatTimeAgo(post.created_at)}
         ></ProfileInfo>
 
-        {isCurrentUserPost && (
-          <div className="text-muted-foreground flex">
-            <EditPostButton post={post} />
-            <DeletePostButton postId={post.id} />
-          </div>
-        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="text-muted-foreground"
+              aria-label="포스트 옵션 열기"
+            >
+              <Ellipsis />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="text-muted-foreground">
+            <DropdownMenuItem className="h-9">
+              <SharePostButton postId={postId} />
+            </DropdownMenuItem>
+            {isCurrentUserPost && (
+              <>
+                <DropdownMenuItem className="h-9">
+                  <EditPostButton post={post} />
+                </DropdownMenuItem>
+                <DropdownMenuItem className="h-9">
+                  <DeletePostButton postId={post.id} />
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Link
         to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
         className="flex flex-col gap-4"
       >
-        <p className="text-base/6.5">
+        <p className="text-base/6.5 whitespace-pre-line">
           {!isExtended ? (
             <>
               {post.content.slice(0, LIMIT_CONTENT_LENGTH)}...
@@ -88,6 +132,26 @@ export default function PostItem({ post }: { post: PostWithAuthor }) {
 }
 
 // --- button components
+function SharePostButton({ postId }: { postId: number }) {
+  const handleSharePostClick = () => {
+    const url = `${import.meta.env.VITE_SITE_URL}/post/${postId}`;
+
+    navigator.clipboard
+      .writeText(url)
+      .then(() => toast.success("링크가 복사되었습니다."))
+      .catch(() => toast.error("링크 복사에 실패했습니다."));
+  };
+
+  return (
+    <button
+      className="flex items-center justify-center gap-2.5"
+      onClick={handleSharePostClick}
+    >
+      <Share2 className="h-2 w-2" />
+      <span>공유하기</span>
+    </button>
+  );
+}
 
 function EditPostButton({ post }: { post: PostWithAuthor }) {
   const openEditPostEditorModal = useOpenEditPostEditorModal();
@@ -101,9 +165,13 @@ function EditPostButton({ post }: { post: PostWithAuthor }) {
   };
 
   return (
-    <Button variant="ghost" onClick={handleEditPostClick}>
-      수정
-    </Button>
+    <button
+      className="flex items-center justify-center gap-2.5"
+      onClick={handleEditPostClick}
+    >
+      <Pencil />
+      <span>수정하기</span>
+    </button>
   );
 }
 
@@ -129,9 +197,13 @@ function DeletePostButton({ postId }: { postId: number }) {
   return (
     <>
       {isPending && <AppLoader />}
-      <Button variant="ghost" onClick={handleDeletePostClick}>
-        삭제
-      </Button>
+      <button
+        className="flex items-center justify-center gap-2.5"
+        onClick={handleDeletePostClick}
+      >
+        <Trash2 />
+        <span>삭제하기</span>
+      </button>
     </>
   );
 }
