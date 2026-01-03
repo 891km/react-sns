@@ -76,15 +76,15 @@ export default function PostItem({ postId }: { postId: number }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="h-9">
+            <DropdownMenuItem>
               <SharePostButton postId={postId} />
             </DropdownMenuItem>
             {isCurrentUserPost && (
               <>
-                <DropdownMenuItem className="h-9">
+                <DropdownMenuItem>
                   <EditPostButton post={post} />
                 </DropdownMenuItem>
-                <DropdownMenuItem className="h-9">
+                <DropdownMenuItem>
                   <DeletePostButton postId={post.id} />
                 </DropdownMenuItem>
               </>

@@ -13,13 +13,30 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   const setSession = useSetSession();
   const isSessionLoaded = useIsSessionLoaded();
 
-  const { isLoading: isProfileLoading } = useFetchProfile(userId);
+  const { data: profile, isLoading: isProfileLoading } =
+    useFetchProfile(userId);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+    if (profile) {
+      supabase.auth.onAuthStateChange((_event, session) => {
+        setSession({
+          session,
+          profile: {
+            nickname: profile.nickname,
+            avatarImageUrl: profile.avatar_image_url,
+            bio: profile.bio,
+          },
+        });
+      });
+    } else {
+      supabase.auth.onAuthStateChange((_event, session) => {
+        setSession({
+          session,
+          profile: null,
+        });
+      });
+    }
+  }, [profile]);
 
   if (!isSessionLoaded || isProfileLoading) return <AppLoader />;
   return children;
