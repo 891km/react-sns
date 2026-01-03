@@ -4,7 +4,7 @@ import Loader from "@/components/status/loader";
 import { ROUTES } from "@/constants/routes";
 import { Link } from "react-router";
 import { UserRoundPenIcon } from "lucide-react";
-import { useSessionProfile, useSessionUserId } from "@/store/session";
+import { useSessionUserId } from "@/store/session";
 import { Button } from "@/components/ui/button";
 import { useOpenProfileEditorModal } from "@/store/profile-editor-modal";
 import ProfileAvatar from "@/components/profile/profile-avatar";
@@ -76,14 +76,15 @@ function PostEditProfileInfo(props: BaseProfileInfoProps) {
 function DefaultProfileInfo(props: BaseProfileInfoProps) {
   const { authorId } = props;
   const userId = useSessionUserId();
-  const profile = useSessionProfile();
-  if (!profile) return <ErrorMessage />;
+  const { data: profile, error, isPending } = useFetchProfile(authorId);
+  if (error) return <ErrorMessage />;
+  if (isPending) return <Loader />;
 
   const isCurrentUser = userId === authorId;
 
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-10">
-      <ProfileAvatar src={profile.avatarImageUrl} size={30} />
+      <ProfileAvatar src={profile.avatar_image_url} size={30} />
       <div className="flex flex-col items-center gap-2">
         <div className="text-lg font-bold">{profile.nickname}</div>
         {profile.bio && (

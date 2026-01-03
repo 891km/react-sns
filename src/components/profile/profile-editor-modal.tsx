@@ -1,3 +1,4 @@
+import defualtAvatar from "@/assets/default-profile.png";
 import ProfileAvatar from "@/components/profile/profile-avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,13 +18,13 @@ import { cn } from "@/lib/utils";
 import { useOpenAlertModal } from "@/store/alert-modal";
 import { useProfileEditorModal } from "@/store/profile-editor-modal";
 import { useSessionProfile, useSessionUserId } from "@/store/session";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, Trash2Icon, Undo2Icon } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
 
 type ImageItem = {
   file: File;
-  previewUrl: string;
+  previewUrl: string | null;
 };
 
 export default function ProfileEditorModal() {
@@ -47,7 +48,10 @@ export default function ProfileEditorModal() {
       },
     });
 
-  //  - state & ref
+  // --- state & ref
+  const [avatarStatus, setAvatarStatus] = useState<"none" | "update" | "reset">(
+    "none",
+  );
   const [avatarItem, setAvatarItem] = useState<ImageItem | null>(null);
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
@@ -59,13 +63,14 @@ export default function ProfileEditorModal() {
       setNickname(profile.nickname);
       setBio(profile?.bio || "");
       setAvatarItem(null);
+      setAvatarStatus("none");
     }
   }, [profile, isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
       if (avatarItem) {
-        resetAvatarItem();
+        deleteAvatarItem();
       }
     }
   }, [isOpen]);
@@ -79,17 +84,28 @@ export default function ProfileEditorModal() {
     if (!e.target.files) return;
     const file = e.target.files[0];
 
-    resetAvatarItem();
+    deleteAvatarItem();
     setAvatarItem({
       file,
       previewUrl: URL.createObjectURL(file),
     });
 
     e.target.value = "";
+    setAvatarStatus("update");
   };
 
   const handleDeleteAvatarClick = () => {
-    resetAvatarItem();
+    deleteAvatarItem();
+    setAvatarStatus("none");
+  };
+
+  const handleResetAvatarClick = () => {
+    deleteAvatarItem();
+    if (!profile?.avatarImageUrl) {
+      setAvatarStatus("none");
+    } else {
+      setAvatarStatus("reset");
+    }
   };
 
   const handleEditProfileClick = () => {
@@ -102,7 +118,7 @@ export default function ProfileEditorModal() {
       userId: userId!,
       nickname,
       bio,
-      avatarImageFile: avatarItem?.file,
+      avatarImageFile: avatarStatus === "reset" ? null : avatarItem?.file,
     });
   };
 
@@ -120,19 +136,22 @@ export default function ProfileEditorModal() {
     close();
   };
 
-  // -- function
-  function resetAvatarItem() {
+  // --- function
+  function deleteAvatarItem() {
     if (!avatarItem) return;
-    URL.revokeObjectURL(avatarItem.previewUrl);
+    if (avatarItem.previewUrl) {
+      URL.revokeObjectURL(avatarItem.previewUrl);
+    }
     setAvatarItem(null);
   }
 
   // --- variables
+  const NICKNAME_LENGTH_MIN = 2;
   const isNicknameChanged = profile?.nickname !== nickname;
   const isBioChanged = profile?.bio !== bio;
-  const isAvatarChanged = Boolean(avatarItem);
+  const isAvatarChanged = avatarStatus !== "none";
+
   const isChanged = isNicknameChanged || isBioChanged || isAvatarChanged;
-  const NICKNAME_LENGTH_MIN = 2;
   const isBlocked = nickname.length < NICKNAME_LENGTH_MIN;
 
   return (
@@ -161,13 +180,18 @@ export default function ProfileEditorModal() {
               />
               <div className="relative mx-auto w-fit">
                 <ProfileAvatar
-                  src={avatarItem?.previewUrl || profile?.avatarImageUrl}
+                  src={
+                    avatarStatus === "reset"
+                      ? null
+                      : avatarItem?.previewUrl || profile?.avatarImageUrl
+                  }
                   size={30}
                 />
-                <Button
-                  variant="default"
-                  size="icon-lg"
-                  className="bg-primary/70 hover:bg-primary/80 absolute right-0 bottom-0 rounded-full"
+                <button
+                  className={cn(
+                    "bg-primary/60 hover:bg-primary/70 flex h-10 w-10 items-center justify-center rounded-full p-3 text-white",
+                    "border-primary absolute right-0 bottom-0 cursor-pointer",
+                  )}
                   aria-label="프로필 이미지 편집"
                   onClick={
                     isAvatarChanged
@@ -177,11 +201,26 @@ export default function ProfileEditorModal() {
                   disabled={isUpdatePending}
                 >
                   {isAvatarChanged ? (
-                    <Trash2Icon className="[svg]:h-8 [svg]:w-8" />
+                    <Trash2Icon className="aspect-square h-full w-full" />
                   ) : (
-                    <PencilIcon className="[svg]:h-8 [svg]:w-8" />
+                    <PencilIcon className="aspect-square h-full w-full" />
                   )}
-                </Button>
+                </button>
+                <button
+                  className={cn(
+                    "bg-primary/30 hover:bg-primary/40 flex h-10 w-10 items-center justify-center rounded-full p-3 text-white",
+                    "absolute bottom-0 left-[calc(100%+6px)] cursor-pointer",
+                  )}
+                  aria-label="프로필 기본 이미지로 되돌리기"
+                  disabled={isUpdatePending}
+                  onClick={handleResetAvatarClick}
+                >
+                  <Undo2Icon className="h-full w-full" />
+                  <img
+                    src={defualtAvatar}
+                    className="absolute -z-1 rounded-full object-cover"
+                  />
+                </button>
               </div>
             </div>
 

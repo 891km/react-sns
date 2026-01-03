@@ -36,13 +36,12 @@ export async function updateProfile({
   userId: string;
   nickname?: string;
   bio?: string;
-  avatarImageFile?: File;
+  avatarImageFile?: File | null;
 }) {
   let newAvatarImageUrl;
+  await deleteImagesInPath(`${userId}/avatar`);
 
   if (avatarImageFile) {
-    await deleteImagesInPath(`${userId}/avatar`);
-
     const fileExtension = avatarImageFile.name.split(".").pop() || "webp";
     const filePath = `${userId}/avatar/${new Date().getTime()}-${crypto.randomUUID()}.${fileExtension}`;
 
@@ -57,7 +56,7 @@ export async function updateProfile({
     .update({
       nickname,
       bio,
-      avatar_image_url: newAvatarImageUrl,
+      avatar_image_url: Boolean(avatarImageFile) ? newAvatarImageUrl : null,
     })
     .eq("id", userId)
     .select()
