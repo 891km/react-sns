@@ -1,3 +1,4 @@
+import ProfileInfo from "@/components/profile/profile-info";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,6 +6,8 @@ import { POST_COMMENT_LENGTH_MAX } from "@/constants/constants";
 import { TOAST_MESSAGES_COMMENT } from "@/constants/toast-messages";
 import { useCreateComment } from "@/hooks/mutations/comment/use-create-comment";
 import { useUpdateComment } from "@/hooks/mutations/comment/use-update-comment";
+import { cn } from "@/lib/utils";
+import { useSessionUserId } from "@/store/session";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,6 +27,8 @@ type CommentEditorProps = CreateMode | EditMode;
 
 export default function PostCommentEditor(props: CommentEditorProps) {
   const { type } = props;
+
+  const userId = useSessionUserId();
 
   const { mutate: createComment, isPending: isCreatePending } =
     useCreateComment({
@@ -74,10 +79,14 @@ export default function PostCommentEditor(props: CommentEditorProps) {
   const isEdited = type === "EDIT" && props.initialContent !== content;
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className={cn("flex w-full flex-col gap-3 pb-2")}>
+      {type === "CREATE" && <ProfileInfo variant="simple" authorId={userId!} />}
       <Textarea
         ref={textareaRef}
-        className="max-h-40 min-h-20 w-full resize-none p-3 whitespace-pre-line focus:outline-none"
+        className={cn(
+          "max-h-40 min-h-24 w-full resize-none bg-white p-3 text-sm whitespace-pre-line focus:outline-none md:text-base",
+          type === "EDIT" && "min-h-auto",
+        )}
         placeholder="댓글을 남겨 보세요"
         name="content"
         value={content}

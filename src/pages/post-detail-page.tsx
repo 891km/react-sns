@@ -10,9 +10,8 @@ export default function PostDetailPage() {
   if (!postId) return <Navigate to={ROUTES.HOME} />;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <PostItem postId={Number(postId)} type="DETAIL" />
-      <div className="text-lg font-bold">댓글</div>
       <PostCommentEditor postId={Number(postId)} type="CREATE" />
       <PostCommentList postId={Number(postId)} />
     </div>

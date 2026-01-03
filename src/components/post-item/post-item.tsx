@@ -46,12 +46,7 @@ export default function PostItem({
   const isCurrentUserPost = post.author_id === userId;
 
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-6 px-1 pb-7",
-        type === "FEED" ? "not-last:border-b" : "border-none",
-      )}
-    >
+    <div className={cn("flex flex-col gap-6 px-1 pb-7 not-last:border-b")}>
       <div className="flex items-center justify-between">
         <ProfileInfo
           variant="post"
