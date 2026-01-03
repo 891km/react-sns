@@ -15,7 +15,9 @@ export async function fetchPosts({
 }) {
   const request = supabase
     .from("post")
-    .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
+    .select(
+      "*, author: profile!author_id (*), isLiked: like!post_id (*), commentCount: comment!post_id(count)",
+    )
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -33,6 +35,7 @@ export async function fetchPosts({
   return data.map((post) => ({
     ...post,
     isLiked: userId ? post.isLiked && post.isLiked.length > 0 : false,
+    commentCount: post.commentCount[0].count ?? 0,
   }));
 }
 
@@ -45,7 +48,9 @@ export async function fetchPostById({
 }) {
   const request = supabase
     .from("post")
-    .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
+    .select(
+      "*, author: profile!author_id (*), isLiked: like!post_id (*), commentCount: comment!post_id(count)",
+    )
     .eq("id", postId);
 
   if (userId) {
@@ -58,6 +63,7 @@ export async function fetchPostById({
   return {
     ...data,
     isLiked: userId ? data.isLiked && data.isLiked.length > 0 : false,
+    commentCount: data.commentCount[0].count ?? 0,
   };
 }
 

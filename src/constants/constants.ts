@@ -11,6 +11,12 @@ export const QUERY_KEYS = {
     userList: (authorId?: string) => ["post", "userList", authorId],
     byId: (postId?: number) => ["post", "list", postId],
   },
+
+  comment: {
+    all: ["comment"],
+    list: ["comment", "list"],
+    byPost: (postId?: number) => ["comment", "list", postId],
+  },
 };
 
 export const BUCKET_NAME = "uploads";

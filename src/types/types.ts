@@ -9,6 +9,8 @@ export type PostWithAuthor = PostEntity & {
   isLiked: boolean;
 };
 
+export type CommentEntity = Database["public"]["Tables"]["comment"]["Row"];
+
 export type UseMutationCallback = {
   onSuccess?: () => void;
   onError?: (error: Error) => void;

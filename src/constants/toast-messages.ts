@@ -19,3 +19,18 @@ export const TOAST_MESSAGES_PROFILE = {
     ERROR: "프로필 수정에 실패했습니다.",
   },
 };
+
+export const TOAST_MESSAGES_COMMENT = {
+  CREATE: {
+    SUCCESS: "댓글을 추가했습니다.",
+    ERROR: "댓글 추가에 실패했습니다.",
+  },
+  UPDATE: {
+    SUCCESS: "댓글을 수정했습니다.",
+    ERROR: "댓글 수정에 실패했습니다.",
+  },
+  DELETE: {
+    SUCCESS: "댓글을 삭제했습니다.",
+    ERROR: "댓글 삭제에 실패했습니다.",
+  },
+};

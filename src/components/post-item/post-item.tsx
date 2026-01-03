@@ -107,7 +107,9 @@ export default function PostItem({
           likeCount={post.like_count}
           isLiked={post.isLiked}
         />
-        {type === "FEED" && <PostCommentButton postId={post.id} />}
+        {type === "FEED" && (
+          <PostCommentButton postId={post.id} count={post.commentCount} />
+        )}
       </div>
     </div>
   );

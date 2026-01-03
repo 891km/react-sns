@@ -13,8 +13,8 @@ export default function PostDetailPage() {
     <div className="flex flex-col gap-4">
       <PostItem postId={Number(postId)} type="DETAIL" />
       <div className="text-lg font-bold">댓글</div>
-      <PostCommentEditor />
-      <PostCommentList />
+      <PostCommentEditor postId={Number(postId)} type="CREATE" />
+      <PostCommentList postId={Number(postId)} />
     </div>
   );
 }
