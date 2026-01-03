@@ -7,6 +7,7 @@ export default function ProfileAvatar({
   className,
 }: {
   src?: string | null;
+  /** tailwindcss 사이즈 기준 */
   size?: number;
   className?: string;
 }) {
@@ -14,8 +15,8 @@ export default function ProfileAvatar({
     <img
       src={src || defaultProfile}
       alt="유저 프로필"
+      style={{ width: size * 4, height: size * 4 }}
       className={cn(
-        `h-${size} w-${size}`,
         "rounded-full object-cover text-gray-100 ring-1 ring-current",
         className,
       )}
