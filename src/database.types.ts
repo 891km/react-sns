@@ -80,25 +80,25 @@ export type Database = {
       }
       profile: {
         Row: {
+          avatar_image_url: string | null
           bio: string
           created_at: string
           id: string
           nickname: string
-          profile_img_url: string | null
         }
         Insert: {
+          avatar_image_url?: string | null
           bio?: string
           created_at?: string
           id?: string
           nickname?: string
-          profile_img_url?: string | null
         }
         Update: {
+          avatar_image_url?: string | null
           bio?: string
           created_at?: string
           id?: string
           nickname?: string
-          profile_img_url?: string | null
         }
         Relationships: []
       }

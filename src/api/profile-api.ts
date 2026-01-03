@@ -1,3 +1,4 @@
+import { deleteImagesInPath, getUploadedImageUrl } from "@/api/image-api";
 import supabase from "@/lib/supabase";
 import { getRandomNickname } from "@/lib/utils";
 
@@ -19,6 +20,46 @@ export async function createProfile(userId: string) {
       id: userId,
       nickname: getRandomNickname(),
     })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateProfile({
+  userId,
+  nickname,
+  bio,
+  avatarImageFile,
+}: {
+  userId: string;
+  nickname?: string;
+  bio?: string;
+  avatarImageFile?: File;
+}) {
+  let newAvatarImageUrl;
+
+  if (avatarImageFile) {
+    await deleteImagesInPath(`${userId}/avatar`);
+
+    const fileExtension = avatarImageFile.name.split(".").pop() || "webp";
+    const filePath = `${userId}/avatar/${new Date().getTime()}-${crypto.randomUUID()}.${fileExtension}`;
+
+    newAvatarImageUrl = await getUploadedImageUrl({
+      file: avatarImageFile,
+      filePath,
+    });
+  }
+
+  const { data, error } = await supabase
+    .from("profile")
+    .update({
+      nickname,
+      bio,
+      avatar_image_url: newAvatarImageUrl,
+    })
+    .eq("id", userId)
     .select()
     .single();
 

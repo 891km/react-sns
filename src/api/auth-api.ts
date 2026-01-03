@@ -47,6 +47,16 @@ export async function loginWithOAuth(provider: Provider) {
   return data;
 }
 
+// --- logout ---
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    await supabase.auth.signOut({
+      scope: "local",
+    });
+  }
+}
+
 // --- reset password ---
 export async function requestResetPasswordEmail(email: string) {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {

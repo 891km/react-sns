@@ -12,3 +12,10 @@ export const TOAST_MESSAGES_POST = {
     ERROR: "포스트 삭제에 실패했습니다.",
   },
 } as const;
+
+export const TOAST_MESSAGES_PROFILE = {
+  UPDATE: {
+    SUCCESS: "프로필을 수정했습니다.",
+    ERROR: "프로필 수정에 실패했습니다.",
+  },
+};

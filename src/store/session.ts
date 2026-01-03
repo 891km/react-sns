@@ -4,8 +4,8 @@ import { combine, devtools } from "zustand/middleware";
 
 type SessionProfile = {
   nickname: string;
-  avatarImageUrl: string | null;
-  bio: string | null;
+  avatarImageUrl?: string | null;
+  bio?: string;
 };
 
 type State = {

@@ -5,14 +5,14 @@ import ErrorMessage from "@/components/status/error-message";
 import Loader from "@/components/status/loader";
 import PostItem from "@/components/post/post-item";
 
-export default function PostFeed() {
+export default function PostFeed({ authorId }: { authorId?: string }) {
   const {
     data: postIds,
     error,
     isPending,
     fetchNextPage,
     isFetchingNextPage,
-  } = useFetchInfinitePostIds();
+  } = useFetchInfinitePostIds(authorId);
   const { ref, inView } = useInView();
 
   useEffect(() => {

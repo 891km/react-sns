@@ -6,22 +6,28 @@ export async function fetchPosts({
   from,
   to,
   userId,
+  authorId,
 }: {
   from: number;
   to: number;
   userId?: string;
+  authorId?: string;
 }) {
-  const query = supabase
+  const request = supabase
     .from("post")
     .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
     .order("created_at", { ascending: false })
     .range(from, to);
 
   if (userId) {
-    query.eq("like.user_id", userId);
+    request.eq("like.user_id", userId);
   }
 
-  const { data, error } = await query;
+  if (authorId) {
+    request.eq("author_id", authorId);
+  }
+
+  const { data, error } = await request;
 
   if (error) throw error;
   return data.map((post) => ({
@@ -37,16 +43,16 @@ export async function fetchPostById({
   postId: number;
   userId?: string;
 }) {
-  const query = supabase
+  const request = supabase
     .from("post")
     .select("*, author: profile!author_id (*), isLiked: like!post_id (*)")
     .eq("id", postId);
 
   if (userId) {
-    query.eq("like.user_id", userId);
+    request.eq("like.user_id", userId);
   }
 
-  const { data, error } = await query.single();
+  const { data, error } = await request.single();
 
   if (error) throw error;
   return {

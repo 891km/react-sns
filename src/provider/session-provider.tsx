@@ -1,4 +1,5 @@
 import AppLoader from "@/components/status/app-loader";
+import ErrorMessage from "@/components/status/error-message";
 import { useFetchProfile } from "@/hooks/queries/use-fetch-profile";
 import supabase from "@/lib/supabase";
 import {
@@ -13,8 +14,11 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   const setSession = useSetSession();
   const isSessionLoaded = useIsSessionLoaded();
 
-  const { data: profile, isLoading: isProfileLoading } =
-    useFetchProfile(userId);
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    error: fetchProfileError,
+  } = useFetchProfile(userId);
 
   useEffect(() => {
     if (profile) {
@@ -38,6 +42,12 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     }
   }, [profile]);
 
+  if (fetchProfileError)
+    return (
+      <div className="flex h-screen w-screen flex-col items-center justify-center">
+        <ErrorMessage />
+      </div>
+    );
   if (!isSessionLoaded || isProfileLoading) return <AppLoader />;
   return children;
 }

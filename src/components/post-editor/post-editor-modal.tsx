@@ -71,7 +71,7 @@ export default function PostEditorModal() {
           <DialogTitle className="sm:text-center">
             {isEdit ? "포스트 수정" : "포스트 작성"}
           </DialogTitle>
-          <ProfileInfo userId={userId!} variant="post-edit" />
+          <ProfileInfo authorId={userId!} variant="post-edit" />
           <DialogDescription className="sr-only">
             글을 입력하고 이미지를 첨부해 게시물을 작성할 수 있습니다.
           </DialogDescription>

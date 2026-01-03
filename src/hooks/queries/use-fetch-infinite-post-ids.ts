@@ -5,17 +5,20 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 5;
 
-export const useFetchInfinitePostIds = () => {
+export const useFetchInfinitePostIds = (authorId?: string) => {
   const queryClient = useQueryClient();
   const userId = useSessionUserId();
 
   return useInfiniteQuery({
-    queryKey: QUERY_KEYS.post.list,
+    queryKey: authorId
+      ? QUERY_KEYS.post.userList(authorId)
+      : QUERY_KEYS.post.list,
+
     queryFn: async ({ pageParam }) => {
       const from = pageParam * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const posts = await fetchPosts({ from, to, userId });
+      const posts = await fetchPosts({ from, to, userId, authorId });
 
       // post 데이터 캐싱 후 post.id 반환
       // -> 캐싱된 post 데이터는 useFetchPostById로 불러옴
