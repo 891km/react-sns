@@ -3,13 +3,10 @@ import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/routes";
 import { containerStyle, flexRowCenterStyle } from "@/layouts/global-layout";
 import ProfileDropdownButton from "@/layouts/header/profile-dropdown-button";
+import ThemeButton from "@/layouts/header/theme-button";
 import { cn } from "@/lib/utils";
 import { useSessionUserId } from "@/store/session";
-import { SunIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-
-const headerActionButton =
-  "hover:bg-muted flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -35,9 +32,7 @@ export default function Header() {
         </Link>
 
         <div className={cn(flexRowCenterStyle, "gap-5")}>
-          <button className={headerActionButton} aria-label="테마 변경">
-            <SunIcon className="h-6 w-6" />
-          </button>
+          <ThemeButton />
           {currentUserId ? (
             <ProfileDropdownButton />
           ) : (
