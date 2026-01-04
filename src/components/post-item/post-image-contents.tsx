@@ -5,13 +5,17 @@ import {
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useOpenPostImagesViewerModal } from "@/store/post-images-viewer-modal";
 import { useState } from "react";
 
 export default function PostImageContents({
+  postId,
   imageUrls,
 }: {
+  postId: number;
   imageUrls: string[];
 }) {
+  const openViewerModal = useOpenPostImagesViewerModal();
   const [isLoadedImages, setIsLoadedImages] = useState<boolean[]>(
     new Array(imageUrls.length).fill(false),
   );
@@ -23,11 +27,19 @@ export default function PostImageContents({
     });
   };
 
+  const handleImageClick = () => {
+    openViewerModal(postId);
+  };
+
   return (
     <Carousel>
       <CarouselContent>
         {imageUrls.map((imageUrl, index) => (
-          <CarouselItem key={imageUrl} className="basis-auto">
+          <CarouselItem
+            key={imageUrl}
+            className="basis-auto cursor-pointer"
+            onClick={handleImageClick}
+          >
             <div className="relative h-64 w-fit flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border">
               {!isLoadedImages[index] && (
                 <div className="aspect-square h-full">

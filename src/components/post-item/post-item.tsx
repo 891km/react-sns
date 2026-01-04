@@ -83,18 +83,21 @@ export default function PostItem({
         </DropdownMenu>
       </div>
 
-      {type === "FEED" ? (
-        <Link
-          to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
-          className="flex flex-col gap-4"
-        >
+      <div className="flex flex-col gap-4">
+        {type === "FEED" ? (
+          <Link
+            to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
+            className="flex flex-col gap-4"
+          >
+            <PostContents post={post} type={type} />
+          </Link>
+        ) : (
           <PostContents post={post} type={type} />
-        </Link>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <PostContents post={post} type={type} />
-        </div>
-      )}
+        )}
+        {post.image_urls && (
+          <PostImageContents postId={post.id} imageUrls={post.image_urls} />
+        )}
+      </div>
 
       <div className="flex gap-2">
         <PostLikeButton
@@ -142,7 +145,6 @@ function PostContents({ post, type }: { post: PostEntity; type: PostType }) {
           )}
         </p>
       )}
-      {post.image_urls && <PostImageContents imageUrls={post.image_urls} />}
     </>
   );
 }
