@@ -1,5 +1,3 @@
-import { useCreatePost } from "@/hooks/mutations/post/use-create-post";
-import { useUpdatePost } from "@/hooks/mutations/post/use-update-post";
 import { PostContentProvider } from "@/provider/post-editor/post-content-provider";
 import { PostImagesProvider } from "@/provider/post-editor/post-images-provider";
 import { usePostEditorModal } from "@/store/post-editor-modal";
@@ -9,7 +7,6 @@ type PostEditorContextValue = {
   postId: number;
   isModalOpen: boolean;
   isEdit: boolean;
-  isPending: boolean;
   closeModal: () => void;
 };
 
@@ -30,13 +27,9 @@ export function PostEditorProvider({ children }: { children: ReactNode }) {
     store.actions.close();
   };
 
-  const { isPending: isCreatePostPending } = useCreatePost({});
-  const { isPending: isUpdatePostPending } = useUpdatePost({});
-
   const isModalOpen = store.isOpen;
   const isEdit = isModalOpen && store.type === "EDIT";
   const postId = +(isEdit && store.postId);
-  const isPending = isUpdatePostPending || isCreatePostPending;
 
   return (
     <PostContentProvider>
@@ -46,7 +39,6 @@ export function PostEditorProvider({ children }: { children: ReactNode }) {
             postId,
             isModalOpen,
             isEdit,
-            isPending,
             closeModal,
           }}
         >

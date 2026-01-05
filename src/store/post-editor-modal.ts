@@ -4,6 +4,7 @@ import { combine, devtools } from "zustand/middleware";
 type CreateMode = {
   isOpen: true;
   type: "CREATE";
+  isPending: boolean;
 };
 
 type EditMode = {
@@ -12,12 +13,14 @@ type EditMode = {
   postId: number;
   content: string;
   imageUrls: string[] | null;
+  isPending: boolean;
 };
 
 type OpenState = CreateMode | EditMode;
 
 type CloseState = {
   isOpen: false;
+  isPending: false;
 };
 
 type ModalState = CloseState | OpenState;
@@ -39,6 +42,9 @@ const usePostEditorModalStore = create(
         close: () => {
           set({ isOpen: false });
         },
+        setIsPending: (isPending: boolean) => {
+          set({ isPending });
+        },
       },
     })),
     {
@@ -55,6 +61,14 @@ export const useOpenPostEditorModal = () => {
 export const useOpenEditPostEditorModal = () => {
   const openEdit = usePostEditorModalStore((store) => store.actions.openEdit);
   return openEdit;
+};
+
+export const usePendingPostEditorModal = () => {
+  const setIsPending = usePostEditorModalStore(
+    (store) => store.actions.setIsPending,
+  );
+  const isPending = usePostEditorModalStore((store) => store.isPending);
+  return { isPending, setIsPending };
 };
 
 export const usePostEditorModal = () => {

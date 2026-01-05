@@ -7,12 +7,14 @@ import {
 import { cn } from "@/lib/utils";
 import { usePostEditor } from "@/provider/post-editor/post-editor-provider";
 import { usePostImages } from "@/provider/post-editor/post-images-provider";
+import { usePendingPostEditorModal } from "@/store/post-editor-modal";
 import { ImageIcon } from "lucide-react";
 import { useRef, type ChangeEvent } from "react";
 
 export default function PostInputImageButton() {
-  const { isEdit, isPending } = usePostEditor();
+  const { isEdit } = usePostEditor();
   const { setImageItems } = usePostImages();
+  const { isPending } = usePendingPostEditorModal();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,18 +44,21 @@ export default function PostInputImageButton() {
         multiple
         className="hidden"
         onChange={handleSelectImages}
+        disabled={isPending}
       />
-      <Tooltip delayDuration={1000}>
+      <Tooltip delayDuration={200}>
         <TooltipTrigger asChild>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={handleFileInputClick}
-            disabled={isPending || isEdit}
-          >
-            <ImageIcon />
-            이미지 추가
-          </Button>
+          <span>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleFileInputClick}
+              disabled={isPending || isEdit}
+            >
+              <ImageIcon />
+              이미지 추가
+            </Button>
+          </span>
         </TooltipTrigger>
         {isEdit && (
           <TooltipContent

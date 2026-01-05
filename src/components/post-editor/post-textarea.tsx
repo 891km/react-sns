@@ -2,11 +2,13 @@ import { POST_CONTENT_LENGTH_MAX } from "@/constants/constants";
 import { cn } from "@/lib/utils";
 import { usePostContent } from "@/provider/post-editor/post-content-provider";
 import { usePostEditor } from "@/provider/post-editor/post-editor-provider";
+import { usePendingPostEditorModal } from "@/store/post-editor-modal";
 import { useRef, useEffect } from "react";
 
 export default function PostTextarea() {
-  const { isModalOpen, isPending } = usePostEditor();
+  const { isModalOpen } = usePostEditor();
   const { content, setContent } = usePostContent();
+  const { isPending } = usePendingPostEditorModal();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
