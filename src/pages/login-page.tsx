@@ -5,15 +5,18 @@ import { useLoginWithOAuth } from "@/hooks/mutations/auth/use-login-with-oauth";
 import { Button } from "@/components/ui/button";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import githubLogo from "@/assets/github-mark.svg";
+import githubLogoWhite from "@/assets/github-mark-white.svg";
 import { toast } from "sonner";
 import { getAuthErrorMessageKo } from "@/lib/error-code-ko";
 import { Spinner } from "@/components/ui/spinner";
 import { ROUTES } from "@/constants/routes";
+import { useIsDarkTheme } from "@/store/theme";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const isDark = useIsDarkTheme();
 
   const { mutate: loginWithPassword, isPending: isLoginWithPasswordPending } =
     useLoginWithPassword({
@@ -83,7 +86,7 @@ export default function LoginPage() {
         </Button>
         <Link
           to={ROUTES.FORGOT_PASSWORD}
-          className="line-height mx-auto text-sm text-black hover:underline"
+          className="line-height mx-auto text-sm hover:underline"
         >
           비밀번호를 잊어버리셨나요?
         </Link>
@@ -91,7 +94,7 @@ export default function LoginPage() {
 
       <div className="text-muted-foreground mx-auto flex items-center gap-2">
         아직 계정이 없다면?
-        <Link to={ROUTES.SIGNUP} className="text-black hover:underline">
+        <Link to={ROUTES.SIGNUP} className="text-foreground hover:underline">
           회원가입
         </Link>
       </div>
@@ -106,7 +109,11 @@ export default function LoginPage() {
             className="w-full py-6"
             onClick={handleLoginWithGithubClick}
           >
-            <img src={githubLogo} alt="" className="h-5 w-5" />
+            <img
+              src={isDark ? githubLogoWhite : githubLogo}
+              alt=""
+              className="h-5 w-5"
+            />
             Github로 로그인
           </Button>
           <Button
