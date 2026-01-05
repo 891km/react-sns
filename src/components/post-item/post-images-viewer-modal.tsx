@@ -16,6 +16,9 @@ import { useFetchPostById } from "@/hooks/queries/use-fetch-post-by-id";
 import { cn } from "@/lib/utils";
 import { usePostImagesViewerModal } from "@/store/post-images-viewer-modal";
 
+const resetStyle = "m-0 h-screen w-full p-0";
+const centerStyle = "flex justify-center items-center";
+
 export default function PostImagesViewerModal() {
   const store = usePostImagesViewerModal();
   const {
@@ -36,7 +39,15 @@ export default function PostImagesViewerModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
-      <DialogContent className="flex h-screen w-screen max-w-screen items-center justify-center rounded-none border-none bg-black p-0 sm:max-w-xl [&_svg]:text-white">
+      <DialogContent
+        className={cn(
+          resetStyle,
+          centerStyle,
+          "max-h-screen max-w-screen sm:max-w-xl",
+          "overflow-hidden",
+          "rounded-none border-none bg-black [&_svg]:text-white",
+        )}
+      >
         <DialogHeader className="hidden">
           <DialogTitle className="sr-only">이미지 뷰어</DialogTitle>
           <DialogDescription className="sr-only">
@@ -51,20 +62,19 @@ export default function PostImagesViewerModal() {
 
 function IamgeContents({ imageUrls }: { imageUrls: string[] }) {
   return (
-    <Carousel className="items-cen relative m-0 flex h-full w-full flex-1">
-      <CarouselContent className="m-0 h-full w-full p-0">
+    <Carousel className={cn(resetStyle)}>
+      <CarouselContent className={cn(resetStyle)}>
         {imageUrls.map((imageUrl, index) => (
-          <CarouselItem key={imageUrl} className="m-0 h-full w-full p-0">
-            <div className="flex h-full w-full flex-col justify-center">
-              <img
-                src={imageUrl}
-                alt={`게시된 이미지 ${index + 1}`}
-                loading="lazy"
-                className={cn(
-                  "h-full w-auto object-contain transition-opacity duration-300",
-                )}
-              />
-            </div>
+          <CarouselItem key={imageUrl} className={cn(resetStyle, centerStyle)}>
+            <img
+              src={imageUrl}
+              alt={`게시된 이미지 ${index + 1}`}
+              loading="lazy"
+              className={cn(
+                "h-auto max-h-screen w-auto object-contain",
+                "transition-opacity duration-300",
+              )}
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
