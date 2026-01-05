@@ -35,13 +35,13 @@ export default function ProfileEditorModal() {
   const store = useProfileEditorModal();
   const {
     isOpen,
-    actions: { close },
+    actions: { close: closeModal },
   } = store;
 
   const { mutate: updateProfile, isPending: isUpdatePending } =
     userUpdateProfile({
       onSuccess: () => {
-        close();
+        closeModal();
         toast.info(TOAST_MESSAGES_PROFILE.UPDATE.SUCCESS);
       },
       onError: () => {
@@ -74,6 +74,15 @@ export default function ProfileEditorModal() {
         deleteAvatarItem();
       }
     }
+
+    // 뒤로가기로 창닫기
+    const handlePopState = () => {
+      closeModal();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [isOpen]);
 
   // --- event handler
@@ -129,12 +138,12 @@ export default function ProfileEditorModal() {
         title: "프로필 수정이 마무리 되지 않았습니다",
         description: "이 화면에서 나가면 수정 중인 내용이 사라집니다.",
         onAction: () => {
-          close();
+          closeModal();
         },
       });
       return;
     }
-    close();
+    closeModal();
   };
 
   // --- function
@@ -156,15 +165,15 @@ export default function ProfileEditorModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCloseModal}>
-      <DialogContent className="flex max-h-[90vh] min-h-80 flex-col">
+      <DialogContent className="flex flex-col sm:bottom-auto sm:max-h-[90vh]">
         <DialogHeader className="gap-8">
-          <DialogTitle className="sm:text-center">프로필 수정</DialogTitle>
+          <DialogTitle className="text-center">프로필 수정</DialogTitle>
           <DialogDescription className="sr-only">
             프로필 정보를 수정할 수 있습니다.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="flex w-full flex-col gap-10 py-2 pb-4">
+        <div className="flex flex-1 flex-col items-center justify-start pt-4 sm:justify-center sm:pt-0">
+          <div className="flex w-full flex-col gap-10 py-2 pb-8">
             <div className="flex flex-col gap-2">
               <Label htmlFor="avatar" className="flex flex-col items-start">
                 <span>프로필 이미지</span>
@@ -232,7 +241,7 @@ export default function ProfileEditorModal() {
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
                   className={cn(
-                    "h-12 w-full text-sm md:text-base",
+                    "h-12 w-full text-base",
                     !isNicknameChanged && "text-muted-foreground",
                   )}
                 />
@@ -247,7 +256,7 @@ export default function ProfileEditorModal() {
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   className={cn(
-                    "h-12 w-full text-sm md:text-base",
+                    "h-12 w-full text-base",
                     !isBioChanged && "text-muted-foreground",
                   )}
                 />
@@ -257,6 +266,7 @@ export default function ProfileEditorModal() {
         </div>
         <DialogFooter>
           <Button
+            size="lg"
             onClick={handleEditProfileClick}
             disabled={isUpdatePending || !isChanged}
           >

@@ -59,6 +59,7 @@ export default function PostSubmitButton() {
     <>
       {isEdit ? (
         <Button
+          size="lg"
           onClick={handleUpdatePostClick}
           disabled={isPending || !isContentChanged}
         >
@@ -67,6 +68,7 @@ export default function PostSubmitButton() {
         </Button>
       ) : (
         <Button
+          size="lg"
           onClick={handleCreatePostClick}
           disabled={isPending || (isEmptyContent && isEmptyImages)}
         >

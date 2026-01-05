@@ -33,23 +33,19 @@ export default function ProfileDropdownButton() {
         <ProfileAvatar src={sessionProfile?.avatarImageUrl} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <button
-            className="flex h-full w-full cursor-pointer items-center gap-2.5"
-            onClick={handleProfilePageClick}
-          >
-            <UserRoundIcon className="h-2 w-2" />
-            <span>프로필</span>
-          </button>
+        <DropdownMenuItem
+          className="flex w-full cursor-pointer items-center gap-2.5"
+          onClick={handleProfilePageClick}
+        >
+          <UserRoundIcon className="h-2 w-2" />
+          <span>프로필</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <button
-            className="flex h-full w-full cursor-pointer items-center gap-2.5"
-            onClick={handleLogoutClick}
-          >
-            <LogOutIcon className="h-2 w-2" />
-            <span>로그아웃</span>
-          </button>
+        <DropdownMenuItem
+          className="flex w-full cursor-pointer items-center gap-2.5"
+          onClick={handleLogoutClick}
+        >
+          <LogOutIcon className="h-2 w-2" />
+          <span>로그아웃</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

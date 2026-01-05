@@ -30,17 +30,26 @@ export default function PostImagePreview() {
   return (
     <>
       {reusltImageUrls && reusltImageUrls.length > 0 && (
-        <Carousel>
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+        >
           <CarouselContent>
             {reusltImageUrls.map((url, index) => (
               <CarouselItem
                 key={url}
                 className={cn(
-                  "basis-auto",
+                  "w-fit max-w-[80%] basis-auto",
                   index === reusltImageUrls.length - 1 && "mr-20",
                 )}
               >
-                <div className="relative h-40 min-w-20 flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border">
+                <div
+                  className={cn(
+                    "relative w-fit min-w-20 flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border sm:h-40",
+                    "h-50 w-full",
+                  )}
+                >
                   <img
                     src={url}
                     alt="선택된 이미지 미리보기"

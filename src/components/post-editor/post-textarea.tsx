@@ -21,10 +21,10 @@ export default function PostTextarea() {
   }, [isModalOpen]);
 
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex h-full flex-col gap-2 p-2 sm:h-auto">
       <textarea
         ref={textareaRef}
-        className="min-h-30 w-full resize-none whitespace-pre-line focus:outline-none"
+        className="w-full flex-1 resize-none whitespace-pre-line focus:outline-none sm:min-h-30"
         placeholder="나누고 싶은 이야기가 있나요?"
         name="content"
         value={content}

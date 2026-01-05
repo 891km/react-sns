@@ -11,7 +11,7 @@
           ? JSON.parse(localStorage.getItem("ThemeStore"))
           : null;
 
-        const theme = themeStore.state.theme;
+        const theme = themeStore?.state.theme || "system";
 
         const htmlTag = document.documentElement;
         htmlTag.classList.remove("dark", "light");

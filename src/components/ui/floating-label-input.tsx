@@ -23,7 +23,7 @@ function FloatingLabelInput({
       <Input
         id={id}
         placeholder=""
-        className={cn(className, "pt-8.5 pb-4.5")}
+        className={cn(className, "pt-9.5 pb-4.5")}
         {...props}
       />
     </div>

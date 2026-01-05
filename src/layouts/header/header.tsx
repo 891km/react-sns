@@ -18,7 +18,7 @@ export default function Header() {
   };
 
   return (
-    <header className="border-b">
+    <header className="bg-background z- sticky top-0 z-20 min-w-sm border-b">
       <div
         className={cn(
           containerStyle,

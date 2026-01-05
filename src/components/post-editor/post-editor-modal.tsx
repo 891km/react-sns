@@ -19,8 +19,11 @@ import { usePostContent } from "@/provider/post-editor/post-content-provider";
 import { usePostImages } from "@/provider/post-editor/post-images-provider";
 import { usePostEditor } from "@/provider/post-editor/post-editor-provider";
 import { useSessionUserId } from "@/store/session";
+import { cn } from "@/lib/utils";
+import { useKeyboardHeight } from "@/hooks/use-keyboard-height";
 
 export default function PostEditorModal() {
+  const keyboardHeight = useKeyboardHeight();
   const userId = useSessionUserId();
   const store = usePostEditorModal();
   const openAlertModal = useOpenAlertModal();
@@ -53,7 +56,6 @@ export default function PostEditorModal() {
       });
       return;
     }
-    1;
     if (store.isOpen && store.type === "EDIT") {
       setContent(store.content);
       setImageItems([]);
@@ -61,12 +63,27 @@ export default function PostEditorModal() {
       setContent("");
       setImageItems([]);
     }
+
+    // 뒤로가기로 창닫기
+    const handlePopState = () => {
+      closeModal();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [isModalOpen]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [keyboardHeight]);
 
   if (!isModalOpen) return;
   return (
     <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
-      <DialogContent className="flex max-h-[90vh] min-h-80 flex-col">
+      <DialogContent
+        className={cn("flex min-h-80 flex-col", "sm:max-h-[90vh]")}
+      >
         <DialogHeader className="gap-8">
           <DialogTitle className="sm:text-center">
             {isEdit ? "포스트 수정" : "포스트 작성"}

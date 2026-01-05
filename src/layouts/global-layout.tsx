@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import { cn } from "@/lib/utils";
 import Header from "@/layouts/header/header";
 
-export const containerStyle = "mx-auto w-full max-w-3xl px-4";
+export const containerStyle = "mx-auto w-full max-w-3xl sm:px-4 px-3 min-w-sm";
 
 export const flexRowCenterStyle = "flex items-center justify-center";
 
@@ -10,7 +10,7 @@ export default function GlobalLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className={cn(containerStyle, "flex-1 border-x py-6")}>
+      <main className={cn(containerStyle, "flex-1 py-4 sm:py-6 md:border-x")}>
         <Outlet />
       </main>
       <footer className="border-t">

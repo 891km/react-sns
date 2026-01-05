@@ -45,16 +45,15 @@ export default function PostInputImageButton() {
       />
       <Tooltip delayDuration={1000}>
         <TooltipTrigger asChild>
-          <span>
-            <Button
-              variant="outline"
-              onClick={handleFileInputClick}
-              disabled={isPending || isEdit}
-            >
-              <ImageIcon />
-              이미지 추가
-            </Button>
-          </span>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={handleFileInputClick}
+            disabled={isPending || isEdit}
+          >
+            <ImageIcon />
+            이미지 추가
+          </Button>
         </TooltipTrigger>
         {isEdit && (
           <TooltipContent

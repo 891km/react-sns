@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import PostImageContents from "@/components/post-item/post-image-contents";
@@ -43,7 +42,9 @@ export default function PostItem({
   const isCurrentUserPost = post.author_id === userId;
 
   return (
-    <div className={cn("flex flex-col gap-6 px-1 pb-7 not-last:border-b")}>
+    <div
+      className={cn("flex flex-col gap-4 px-1 pb-7 not-last:border-b sm:gap-6")}
+    >
       <div className="flex items-center justify-between">
         <ProfileInfo
           variant="post"
@@ -63,17 +64,11 @@ export default function PostItem({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <PostShareButton postId={postId} />
-            </DropdownMenuItem>
+            <PostShareButton postId={postId} />
             {isCurrentUserPost && (
               <>
-                <DropdownMenuItem>
-                  <PostEditButton post={post} />
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <PostDeleteButton postId={post.id} />
-                </DropdownMenuItem>
+                <PostEditButton post={post} />
+                <PostDeleteButton postId={post.id} />
               </>
             )}
           </DropdownMenuContent>

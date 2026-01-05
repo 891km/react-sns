@@ -1,4 +1,5 @@
 import AppLoader from "@/components/status/app-loader";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/constants/routes";
 import { TOAST_MESSAGES_POST } from "@/constants/toast-messages";
 import { useDeletePost } from "@/hooks/mutations/post/use-delete-post";
@@ -41,13 +42,13 @@ export default function PostDeleteButton({ postId }: { postId: number }) {
   return (
     <>
       {isPending && <AppLoader />}
-      <button
-        className="flex h-full w-full cursor-pointer items-center gap-2.5"
+      <DropdownMenuItem
+        className="flex w-full cursor-pointer items-center gap-2.5"
         onClick={handleDeletePostClick}
       >
         <Trash2Icon />
         <span>삭제하기</span>
-      </button>
+      </DropdownMenuItem>
     </>
   );
 }

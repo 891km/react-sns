@@ -35,7 +35,7 @@ export default function ThemeButton() {
         {THEMES.map((theme) => (
           <DropdownMenuItem
             key={`theme-button-${theme}`}
-            className="flex justify-between"
+            className="flex cursor-pointer justify-between"
             onClick={() => handleChangeClick(theme)}
           >
             {theme === "system" && "시스템"}

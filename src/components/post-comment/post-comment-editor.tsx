@@ -113,6 +113,14 @@ export default function PostCommentEditor(props: CommentEditorProps) {
     });
   };
 
+  const handleFocus = () => {
+    textareaRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+    console.log("제대로 되는건가요");
+  };
+
   const isPending = isCreatePending || isUpdatePending;
   const isEmptyContent = !content.trim();
   const isEdited = type === "EDIT" && props.initialContent !== content;
@@ -127,7 +135,7 @@ export default function PostCommentEditor(props: CommentEditorProps) {
       <Textarea
         ref={textareaRef}
         className={cn(
-          "max-h-40 min-h-22 w-full resize-none bg-white p-3 text-sm whitespace-pre-line focus:outline-none sm:text-base",
+          "max-h-40 min-h-22 w-full resize-none bg-white p-3 whitespace-pre-line focus:outline-none",
           type !== "CREATE" && "min-h-auto",
         )}
         placeholder={
@@ -139,6 +147,7 @@ export default function PostCommentEditor(props: CommentEditorProps) {
         onChange={(e) => setContent(e.target.value)}
         disabled={isPending}
         onClick={handleGuestTextareaClick}
+        onFocus={handleFocus}
       />
       <div className="flex justify-end gap-2">
         {type === "CREATE" && (

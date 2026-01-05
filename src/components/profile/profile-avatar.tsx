@@ -17,7 +17,7 @@ export default function ProfileAvatar({
       alt="유저 프로필"
       style={{ width: size * 4, height: size * 4 }}
       className={cn(
-        "rounded-full object-cover text-gray-100 ring-1 ring-current",
+        "text-muted rounded-full object-cover ring-1 ring-current",
         className,
       )}
     />

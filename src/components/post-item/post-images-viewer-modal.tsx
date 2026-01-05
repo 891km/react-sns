@@ -18,15 +18,26 @@ import { cn } from "@/lib/utils";
 import { usePostImagesViewerModal } from "@/store/post-images-viewer-modal";
 import { useEffect, useState } from "react";
 
-const resetStyle = "m-0 h-screen w-full p-0";
+const resetStyle = "m-0 h-screen w-full p-0 sm:m-0 sm:p-0";
 const centerStyle = "flex justify-center items-center";
 
 export default function PostImagesViewerModal() {
   const store = usePostImagesViewerModal();
   const {
     isOpen,
-    actions: { close },
+    actions: { close: closeModal },
   } = store;
+
+  useEffect(() => {
+    // 뒤로가기로 창닫기
+    const handlePopState = () => {
+      closeModal();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return;
   if (!store.postId) return;
@@ -39,7 +50,7 @@ export default function PostImagesViewerModal() {
           centerStyle,
           "max-h-screen max-w-screen sm:max-w-xl",
           "overflow-hidden",
-          "rounded-none border-none bg-black [&_svg]:text-white",
+          "rounded-none border-none bg-black sm:rounded-none md:rounded-none [&_svg]:text-white",
         )}
       >
         <DialogHeader className="hidden">
