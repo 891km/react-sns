@@ -7,14 +7,14 @@ export const useFetchPostById = ({
   postId,
   type = "FEED",
 }: {
-  postId: number;
+  postId: number | null;
   type?: "FEED" | "DETAIL";
 }) => {
   const userId = useSessionUserId();
 
   return useQuery({
-    queryKey: QUERY_KEYS.post.byId(postId),
-    queryFn: () => fetchPostById({ postId, userId }),
-    enabled: type === "DETAIL" ? true : false,
+    queryKey: QUERY_KEYS.post.byId(postId!),
+    queryFn: () => fetchPostById({ postId: postId!, userId }),
+    enabled: type === "DETAIL" && postId !== null,
   });
 };

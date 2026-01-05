@@ -20,18 +20,18 @@ export default function PostImagesViewerModal() {
   const store = usePostImagesViewerModal();
   const {
     isOpen,
-    postId,
     actions: { close },
   } = store;
 
   const { data: post } = useFetchPostById({
-    postId: postId!,
+    postId: isOpen ? store.postId : null,
     type: "DETAIL",
   });
 
   const imageUrls = post?.image_urls;
 
   if (!isOpen) return;
+  if (!store.postId) return;
   if (!imageUrls || imageUrls.length === 0) return;
 
   return (
