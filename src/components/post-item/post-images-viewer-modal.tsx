@@ -4,6 +4,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
 import { useFetchPostById } from "@/hooks/queries/use-fetch-post-by-id";
 import { cn } from "@/lib/utils";
 import { usePostImagesViewerModal } from "@/store/post-images-viewer-modal";
+import { useEffect, useState } from "react";
 
 const resetStyle = "m-0 h-screen w-full p-0";
 const centerStyle = "flex justify-center items-center";
@@ -26,16 +28,8 @@ export default function PostImagesViewerModal() {
     actions: { close },
   } = store;
 
-  const { data: post } = useFetchPostById({
-    postId: isOpen ? store.postId : null,
-    type: "DETAIL",
-  });
-
-  const imageUrls = post?.image_urls;
-
   if (!isOpen) return;
   if (!store.postId) return;
-  if (!imageUrls || imageUrls.length === 0) return;
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
@@ -54,15 +48,41 @@ export default function PostImagesViewerModal() {
             포스트에 게시된 이미지를 자세히 볼 수 있습니다.
           </DialogDescription>
         </DialogHeader>
-        <IamgeContents imageUrls={imageUrls} />
+        {
+          <IamgeContents
+            postId={store.postId}
+            selectedIndex={store.selectedIndex}
+          />
+        }
       </DialogContent>
     </Dialog>
   );
 }
 
-function IamgeContents({ imageUrls }: { imageUrls: string[] }) {
+function IamgeContents({
+  postId,
+  selectedIndex,
+}: {
+  postId: number;
+  selectedIndex: number;
+}) {
+  const [api, setApi] = useState<CarouselApi | null>(null);
+
+  const { data: post } = useFetchPostById({
+    postId: postId,
+    type: "DETAIL",
+  });
+
+  useEffect(() => {
+    if (!api) return;
+    api.scrollTo(selectedIndex, true);
+  }, [api, selectedIndex]);
+
+  const imageUrls = post?.image_urls;
+  if (!imageUrls || imageUrls.length === 0) return;
+
   return (
-    <Carousel className={cn(resetStyle)}>
+    <Carousel setApi={setApi} className={cn(resetStyle)}>
       <CarouselContent className={cn(resetStyle)}>
         {imageUrls.map((imageUrl, index) => (
           <CarouselItem key={imageUrl} className={cn(resetStyle, centerStyle)}>
@@ -71,7 +91,7 @@ function IamgeContents({ imageUrls }: { imageUrls: string[] }) {
               alt={`게시된 이미지 ${index + 1}`}
               loading="lazy"
               className={cn(
-                "h-auto max-h-screen w-auto object-contain",
+                "h-auto max-h-screen w-full object-contain",
                 "transition-opacity duration-300",
               )}
             />

@@ -4,6 +4,7 @@ import { combine, devtools } from "zustand/middleware";
 type OpenState = {
   isOpen: true;
   postId: number;
+  selectedIndex: number;
 };
 
 type CloseState = {
@@ -20,7 +21,13 @@ const postImagesViewerModalStore = create(
   devtools(
     combine(initialState, (set) => ({
       actions: {
-        open: (postId: number) => set({ isOpen: true, postId }),
+        open: ({
+          postId,
+          selectedIndex,
+        }: {
+          postId: number;
+          selectedIndex: number;
+        }) => set({ isOpen: true, postId, selectedIndex }),
         close: () => set({ isOpen: false }),
       },
     })),

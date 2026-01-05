@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import { Ellipsis } from "lucide-react";
 
@@ -18,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { POST_CONTENT_LENGTH_SHORT } from "@/constants/constants";
 import PostImageContents from "@/components/post-item/post-image-contents";
 import PostShareButton from "@/components/post-item/post-share-button";
 import PostEditButton from "@/components/post-item/post-edit-button";
@@ -26,9 +24,8 @@ import PostDeleteButton from "@/components/post-item/post-delete-button";
 import PostLikeButton from "@/components/post-item/post-like-button";
 import PostCommentButton from "@/components/post-item/post-comment-button";
 import { cn } from "@/lib/utils";
-import type { PostEntity } from "@/types/types";
-
-type PostType = "FEED" | "DETAIL";
+import type { PostType } from "@/types/types";
+import PostTextContents from "@/components/post-item/post-text-contents";
 
 export default function PostItem({
   postId,
@@ -89,10 +86,10 @@ export default function PostItem({
             to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
             className="flex flex-col gap-4"
           >
-            <PostContents post={post} type={type} />
+            <PostTextContents post={post} type={type} />
           </Link>
         ) : (
-          <PostContents post={post} type={type} />
+          <PostTextContents post={post} type={type} />
         )}
         {post.image_urls && (
           <PostImageContents postId={post.id} imageUrls={post.image_urls} />
@@ -110,41 +107,5 @@ export default function PostItem({
         )}
       </div>
     </div>
-  );
-}
-
-function PostContents({ post, type }: { post: PostEntity; type: PostType }) {
-  const [isExtended, setIsExtended] = useState<boolean>(
-    type === "DETAIL"
-      ? true
-      : Boolean(post && post.content.length < POST_CONTENT_LENGTH_SHORT),
-  );
-
-  const handleExtendClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsExtended(true);
-  };
-
-  return (
-    <>
-      {post.content && (
-        <p className="text-base/6.5 whitespace-pre-line">
-          {!isExtended ? (
-            <>
-              {post.content.slice(0, POST_CONTENT_LENGTH_SHORT)}...
-              <button
-                className="cursor-pointer px-2 text-gray-400"
-                onClick={handleExtendClick}
-              >
-                더보기
-              </button>
-            </>
-          ) : (
-            <>{post.content}</>
-          )}
-        </p>
-      )}
-    </>
   );
 }

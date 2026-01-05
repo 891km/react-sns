@@ -27,8 +27,8 @@ export default function PostImageContents({
     });
   };
 
-  const handleImageClick = () => {
-    openViewerModal(postId);
+  const handleImageClick = (index: number) => {
+    openViewerModal({ postId, selectedIndex: index });
   };
 
   return (
@@ -38,7 +38,7 @@ export default function PostImageContents({
           <CarouselItem
             key={imageUrl}
             className="basis-auto cursor-pointer"
-            onClick={handleImageClick}
+            onClick={() => handleImageClick(index)}
           >
             <div className="relative h-64 w-fit flex-1 shrink-0 basis-auto overflow-hidden rounded-sm border">
               {!isLoadedImages[index] && (

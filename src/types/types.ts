@@ -2,6 +2,8 @@ import { type Database } from "@/database.types";
 
 export type Theme = "system" | "dark" | "light";
 
+export type PostType = "FEED" | "DETAIL";
+
 export type PostEntity = Database["public"]["Tables"]["post"]["Row"];
 
 export type ProfileEntity = Database["public"]["Tables"]["profile"]["Row"];
