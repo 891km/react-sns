@@ -43,7 +43,7 @@ export default function PostImagesViewerModal() {
   if (!store.postId) return;
 
   return (
-    <Dialog open={isOpen} onOpenChange={close}>
+    <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent
         className={cn(
           resetStyle,
@@ -60,7 +60,7 @@ export default function PostImagesViewerModal() {
           </DialogDescription>
         </DialogHeader>
         {
-          <IamgeContents
+          <ImageContents
             postId={store.postId}
             selectedIndex={store.selectedIndex}
           />
@@ -70,7 +70,7 @@ export default function PostImagesViewerModal() {
   );
 }
 
-function IamgeContents({
+function ImageContents({
   postId,
   selectedIndex,
 }: {
