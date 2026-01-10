@@ -1,17 +1,33 @@
 import { type Database } from "@/database.types";
 
+export type ContentMeta = {
+  start: number;
+  end: number;
+}[];
+
+export type PostMetadata = {
+  content_hidden?: ContentMeta;
+  images_hidden?: boolean;
+};
+
 export type Theme = "system" | "dark" | "light";
 
 export type PostType = "FEED" | "DETAIL";
 
-export type PostEntity = Database["public"]["Tables"]["post"]["Row"];
+export type PostEntity = Omit<
+  Database["public"]["Tables"]["post"]["Row"],
+  "metadata"
+> & {
+  metadata: PostMetadata | null;
+};
 
-export type ProfileEntity = Database["public"]["Tables"]["profile"]["Row"];
-
-export type PostWithAuthor = PostEntity & {
+export type Post = PostEntity & {
   author: ProfileEntity;
   isLiked: boolean;
+  commentCount: number;
 };
+
+export type ProfileEntity = Database["public"]["Tables"]["profile"]["Row"];
 
 export type CommentEntity = Database["public"]["Tables"]["comment"]["Row"];
 

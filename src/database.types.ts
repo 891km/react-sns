@@ -110,6 +110,7 @@ export type Database = {
           id: number
           image_urls: string[] | null
           like_count: number
+          metadata: Json | null
         }
         Insert: {
           author_id?: string
@@ -118,6 +119,7 @@ export type Database = {
           id?: number
           image_urls?: string[] | null
           like_count?: number
+          metadata?: Json | null
         }
         Update: {
           author_id?: string
@@ -126,6 +128,7 @@ export type Database = {
           id?: number
           image_urls?: string[] | null
           like_count?: number
+          metadata?: Json | null
         }
         Relationships: [
           {
