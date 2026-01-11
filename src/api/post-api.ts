@@ -1,6 +1,6 @@
 import { getUploadedImageUrl } from "@/api/image-api";
 import supabase from "@/lib/supabase";
-import type { PostEntity } from "@/types/types";
+import type { PostEntity, Post, ContentMeta, ImagesMeta } from "@/types/types";
 
 export async function fetchPosts({
   from,
@@ -36,7 +36,7 @@ export async function fetchPosts({
     ...post,
     isLiked: userId ? post.isLiked && post.isLiked.length > 0 : false,
     commentCount: post.commentCount[0].count ?? 0,
-  }));
+  })) as Post[];
 }
 
 export async function fetchPostById({
@@ -64,20 +64,30 @@ export async function fetchPostById({
     ...data,
     isLiked: userId ? data.isLiked && data.isLiked.length > 0 : false,
     commentCount: data.commentCount[0].count ?? 0,
-  };
+  } as Post;
 }
 
-export async function createPost(content: string) {
+export async function createPost({
+  content,
+  contentMeta,
+}: {
+  content: string;
+  contentMeta: ContentMeta;
+}) {
   const { data, error } = await supabase
     .from("post")
     .insert({
       content,
+      metadata: {
+        content_hidden: contentMeta,
+        images_hidden: false,
+      },
     })
     .select()
     .single();
 
   if (error) throw error;
-  return data;
+  return data as Post;
 }
 
 export async function updatePost(post: Partial<PostEntity> & { id: number }) {
@@ -89,7 +99,7 @@ export async function updatePost(post: Partial<PostEntity> & { id: number }) {
     .single();
 
   if (error) throw error;
-  return data;
+  return data as Post;
 }
 
 export async function deletePost(id: number) {
@@ -101,19 +111,23 @@ export async function deletePost(id: number) {
     .single();
 
   if (error) throw error;
-  return data;
+  return data as Post;
 }
 
-export async function createPostWithImages({
+export async function createPostWithUpdate({
   content,
+  contentMeta,
+  imagesMeta,
   imageFiles,
   userId,
 }: {
   content: string;
+  contentMeta: ContentMeta;
+  imagesMeta: ImagesMeta;
   imageFiles: File[];
   userId: string;
 }) {
-  const post = await createPost(content);
+  const post = await createPost({ content, contentMeta });
   if (imageFiles.length === 0) return;
 
   try {
@@ -135,6 +149,10 @@ export async function createPostWithImages({
     const updatedPost = await updatePost({
       id: post.id,
       image_urls: imageUrls,
+      metadata: {
+        content_hidden: contentMeta,
+        images_hidden: imagesMeta,
+      },
     });
     return updatedPost;
   } catch (error) {

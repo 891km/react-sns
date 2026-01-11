@@ -25,12 +25,6 @@ export default function PostTextarea() {
   const overlapRef = useRef<HTMLDivElement>(null);
 
   // useEffects
-  // useEffect(() => {
-  //   if (!textareaRef.current) return;
-
-  //   setContentMeta(contentMeta);
-  // }, [content, contentMeta]);
-
   useEffect(() => {
     if (!textareaRef.current || !overlapRef.current) return;
     const textarea = textareaRef.current;

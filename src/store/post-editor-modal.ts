@@ -1,3 +1,4 @@
+import type { ContentMeta, ImagesMeta } from "@/types/types";
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
@@ -12,6 +13,8 @@ type EditMode = {
   type: "EDIT";
   postId: number;
   content: string;
+  contentMeta: ContentMeta;
+  imagesMeta: ImagesMeta;
   imageUrls: string[] | null;
   isPending?: boolean;
 };

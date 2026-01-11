@@ -1,7 +1,7 @@
 import { togglePostLike } from "@/api/post-api";
 import { QUERY_KEYS } from "@/constants/constants";
 import { useSessionUserId } from "@/store/session";
-import { type PostWithAuthor, type UseMutationCallback } from "@/types/types";
+import { type Post, type UseMutationCallback } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useTogglePostLike = (callback?: UseMutationCallback) => {
@@ -20,23 +20,18 @@ export const useTogglePostLike = (callback?: UseMutationCallback) => {
         queryKey: QUERY_KEYS.post.byId(postId),
       });
 
-      const prevPost = queryClient.getQueryData<PostWithAuthor>(
+      const prevPost = queryClient.getQueryData<Post>(
         QUERY_KEYS.post.byId(postId),
       );
 
-      queryClient.setQueryData<PostWithAuthor>(
-        QUERY_KEYS.post.byId(postId),
-        (post) => {
-          if (!post) throw new Error("포스트가 존재하지 않습니다.");
-          return {
-            ...post,
-            isLiked: !post.isLiked,
-            like_count: post.isLiked
-              ? post.like_count - 1
-              : post.like_count + 1,
-          };
-        },
-      );
+      queryClient.setQueryData<Post>(QUERY_KEYS.post.byId(postId), (post) => {
+        if (!post) throw new Error("포스트가 존재하지 않습니다.");
+        return {
+          ...post,
+          isLiked: !post.isLiked,
+          like_count: post.isLiked ? post.like_count - 1 : post.like_count + 1,
+        };
+      });
 
       return { prevPost };
     },

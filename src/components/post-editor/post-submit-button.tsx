@@ -14,7 +14,8 @@ import { toast } from "sonner";
 export default function PostSubmitButton() {
   const userId = useSessionUserId();
   const { isEdit, postId, closeModal } = usePostEditor();
-  const { content, isEmptyContent, isContentChanged } = usePostContent();
+  const { content, contentMeta, imagesMeta, isEmptyContent, isChanged } =
+    usePostContent();
   const { imageItems, isEmptyImages } = usePostImages();
   const { isPending, setIsPending } = usePendingPostEditorModal();
 
@@ -48,6 +49,8 @@ export default function PostSubmitButton() {
 
     createPost({
       content,
+      contentMeta,
+      imagesMeta,
       imageFiles: imageItems.map((imageItem) => imageItem.file),
       userId: userId,
     });
@@ -55,11 +58,15 @@ export default function PostSubmitButton() {
 
   const handleUpdatePostClick = () => {
     if (!isEdit) return;
-    if (!userId || !isContentChanged) return;
+    if (!userId || !isChanged) return;
 
     updatePost({
       id: postId,
       content,
+      metadata: {
+        content_hidden: contentMeta,
+        images_hidden: imagesMeta,
+      },
     });
   };
 
@@ -70,7 +77,7 @@ export default function PostSubmitButton() {
         <Button
           size="lg"
           onClick={handleUpdatePostClick}
-          disabled={isPending || !isContentChanged}
+          disabled={isPending || !isChanged}
         >
           {isPending && <Spinner />}
           수정하기

@@ -1,15 +1,17 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useOpenEditPostEditorModal } from "@/store/post-editor-modal";
-import type { PostWithAuthor } from "@/types/types";
+import type { Post } from "@/types/types";
 import { PencilIcon } from "lucide-react";
 
-export default function PostEditButton({ post }: { post: PostWithAuthor }) {
+export default function PostEditButton({ post }: { post: Post }) {
   const openEditPostEditorModal = useOpenEditPostEditorModal();
 
   const handleEditPostClick = () => {
     openEditPostEditorModal({
       postId: post.id,
       content: post.content,
+      contentMeta: post.metadata.content_hidden,
+      imagesMeta: post.metadata.images_hidden,
       imageUrls: post.image_urls,
     });
   };

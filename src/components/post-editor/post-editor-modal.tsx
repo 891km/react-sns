@@ -28,13 +28,19 @@ export default function PostEditorModal() {
   const store = usePostEditorModal();
   const openAlertModal = useOpenAlertModal();
 
-  const { setContent, isEmptyContent, isContentChanged } = usePostContent();
+  const {
+    setContent,
+    setContentMeta,
+    setImagesMeta,
+    isEmptyContent,
+    isChanged,
+  } = usePostContent();
   const { imageItems, setImageItems } = usePostImages();
   const { isEmptyImages } = usePostImages();
   const { isModalOpen, isEdit, closeModal } = usePostEditor();
 
   const handleCloseModal = () => {
-    if (isEdit && !isContentChanged) {
+    if (isEdit && !isChanged) {
       closeModal();
     } else if (!isEmptyContent || !isEmptyImages) {
       openAlertModal({
@@ -58,6 +64,8 @@ export default function PostEditorModal() {
     }
     if (store.isOpen && store.type === "EDIT") {
       setContent(store.content);
+      setContentMeta(store.contentMeta);
+      setImagesMeta(store.imagesMeta);
       setImageItems([]);
     } else {
       setContent("");

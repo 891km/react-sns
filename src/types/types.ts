@@ -5,9 +5,11 @@ export type ContentMeta = {
   end: number;
 }[];
 
+export type ImagesMeta = boolean;
+
 export type PostMetadata = {
-  content_hidden?: ContentMeta;
-  images_hidden?: boolean;
+  content_hidden: ContentMeta;
+  images_hidden: ImagesMeta;
 };
 
 export type Theme = "system" | "dark" | "light";
@@ -18,7 +20,7 @@ export type PostEntity = Omit<
   Database["public"]["Tables"]["post"]["Row"],
   "metadata"
 > & {
-  metadata: PostMetadata | null;
+  metadata: PostMetadata;
 };
 
 export type Post = PostEntity & {

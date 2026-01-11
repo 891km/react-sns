@@ -1,4 +1,5 @@
 import { POST_CONTENT_LENGTH_SHORT } from "@/constants/constants";
+import { renderHiddenContent } from "@/lib/hide-content";
 import type { PostEntity, PostType } from "@/types/types";
 import { useState } from "react";
 
@@ -36,7 +37,12 @@ export default function PostTextContents({
               </button>
             </>
           ) : (
-            <>{post.content}</>
+            <>
+              {renderHiddenContent({
+                content: post.content,
+                contentMeta: post.metadata?.content_hidden,
+              })}
+            </>
           )}
         </p>
       )}
