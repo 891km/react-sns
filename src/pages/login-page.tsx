@@ -48,13 +48,6 @@ export default function LoginPage() {
     loginWithOAuth("github");
   };
 
-  const handleLoginWithTestClick = () => {
-    loginWithPassword({
-      email: "test@test.com",
-      password: "123456",
-    });
-  };
-
   const isEmptyInput = !email.trim() || !password.trim();
   const isLoginPending = isLoginWithPasswordPending || isLoginWithOAuthPending;
 
@@ -115,13 +108,6 @@ export default function LoginPage() {
               className="h-5 w-5"
             />
             Github로 로그인
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full py-6"
-            onClick={handleLoginWithTestClick}
-          >
-            테스트 계정으로 로그인
           </Button>
         </div>
       </div>

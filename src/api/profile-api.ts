@@ -1,6 +1,6 @@
 import { deleteImagesInPath, getUploadedImageUrl } from "@/api/image-api";
 import supabase from "@/lib/supabase";
-import { getRandomNickname } from "@/lib/utils";
+import { getRandomNickname } from "@/lib/random-nickname";
 
 export async function fetchProfile(userId: string) {
   const { data, error } = await supabase

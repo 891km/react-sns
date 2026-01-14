@@ -1,3 +1,4 @@
+// --- query keys
 export const QUERY_KEYS = {
   profile: {
     all: ["profile"],
@@ -19,6 +20,7 @@ export const QUERY_KEYS = {
   },
 };
 
+// --- supabase ---
 export const BUCKET_NAME = "uploads";
 
 export const POST_CONTENT_LENGTH_SHORT = 180;
