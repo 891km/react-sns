@@ -27,7 +27,7 @@ export default function Header() {
         )}
       >
         <Link to={ROUTES.HOME} className={cn(flexRowCenterStyle, "gap-2")}>
-          <img className="h-5" src={logo} alt="" />
+          <img className="h-6 w-6" src={logo} alt="" />
           <h1 className="font-bold">두더지 로그</h1>
         </Link>
 

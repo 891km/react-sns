@@ -151,6 +151,6 @@
   }
 }
 
-textarea::selection {
+::selection {
   background-color: var(--color-green-300);
 }
