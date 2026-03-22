@@ -1,3 +1,4 @@
+import PostTextareaContent from "@/components/post-editor/post-textarea-content";
 import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
@@ -6,11 +7,7 @@ import {
 } from "@/components/ui/context-menu";
 import TextCounter from "@/components/ui/text-counter";
 import { POST_CONTENT_LENGTH_MAX } from "@/constants/constants";
-import {
-  adjustContentMeta,
-  normalizeContentMeta,
-  renderTextareaOverlay,
-} from "@/lib/hide-content";
+import { adjustContentMeta, normalizeContentMeta } from "@/lib/content-meta";
 import { cn } from "@/lib/utils";
 import { usePostContent } from "@/provider/post-editor/post-content-provider";
 import { usePostEditor } from "@/provider/post-editor/post-editor-provider";
@@ -112,7 +109,10 @@ export default function PostTextarea() {
                 "pointer-events-none",
               )}
             >
-              {renderTextareaOverlay({ content, contentMeta })}
+              <PostTextareaContent
+                content={content}
+                contentMeta={contentMeta}
+              />
             </div>
           </div>
         </ContextMenuTrigger>

@@ -9,7 +9,7 @@ import { useOpenPostImagesViewerModal } from "@/store/post-images-viewer-modal";
 import type { PostType } from "@/types/types";
 import { useState } from "react";
 
-export default function PostImageContents({
+export default function PostImageContent({
   postId,
   type,
   imageUrls,
