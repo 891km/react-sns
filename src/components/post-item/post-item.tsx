@@ -16,7 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import PostImageContents from "@/components/post-item/post-image-contents";
+import PostImageContent from "@/components/post-item/post-image-content";
 import PostShareButton from "@/components/post-item/post-share-button";
 import PostEditButton from "@/components/post-item/post-edit-button";
 import PostDeleteButton from "@/components/post-item/post-delete-button";
@@ -24,7 +24,7 @@ import PostLikeButton from "@/components/post-item/post-like-button";
 import PostCommentButton from "@/components/post-item/post-comment-button";
 import { cn } from "@/lib/utils";
 import type { PostType } from "@/types/types";
-import PostTextContents from "@/components/post-item/post-text-contents";
+import PostTextContent from "@/components/post-item/post-text-content";
 
 export default function PostItem({
   postId,
@@ -81,13 +81,13 @@ export default function PostItem({
             to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
             className="flex flex-col gap-4"
           >
-            <PostTextContents post={post} type={type} />
+            <PostTextContent post={post} type={type} />
           </Link>
         ) : (
-          <PostTextContents post={post} type={type} />
+          <PostTextContent post={post} type={type} />
         )}
         {post.image_urls && (
-          <PostImageContents
+          <PostImageContent
             postId={post.id}
             type={type}
             imageUrls={post.image_urls}

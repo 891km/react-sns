@@ -5,7 +5,6 @@
  */
 
 import type { ContentMeta } from "@/types/types";
-import type { ReactNode } from "react";
 
 export function adjustContentMeta({
   delta,
@@ -80,39 +79,39 @@ export function normalizeContentMeta(meta: ContentMeta): ContentMeta {
   return normalizedMeta;
 }
 
-export function renderTextareaOverlay({
+export function splitContentByMeta({
   content,
   contentMeta,
 }: {
   content: string;
   contentMeta?: ContentMeta;
 }) {
-  if (contentMeta?.length === 0) return content;
-
-  let nodes: ReactNode[] = [];
   let cursor = 0;
+  const metas = contentMeta ?? [];
+  const result: Array<{ type: string; value: string }> = [];
 
-  contentMeta?.forEach((meta, index) => {
+  metas.forEach((meta) => {
     if (cursor < meta.start) {
-      nodes.push(
-        <span key={`text-${index}`}>{content.slice(cursor, meta.start)}</span>,
-      );
+      result.push({
+        type: "text",
+        value: content.slice(cursor, meta.start),
+      });
     }
 
-    nodes.push(
-      <span
-        key={`hidden-${index}`}
-        className="bg-muted-foreground/30 rounded-xs"
-      >
-        {content.slice(meta.start, meta.end)}
-      </span>,
-    );
+    result.push({
+      type: "hidden",
+      value: content.slice(meta.start, meta.end),
+    });
+
     cursor = meta.end;
   });
 
   if (cursor < content.length) {
-    nodes.push(<span key="text-end">{content.slice(cursor)}</span>);
+    result.push({
+      type: "text",
+      value: content.slice(cursor),
+    });
   }
 
-  return nodes;
+  return result;
 }

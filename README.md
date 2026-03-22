@@ -75,7 +75,7 @@ https://891km-log.vercel.app
 │   │
 │   ├── lib/                        # 유틸리티 함수
 │   │   ├── supabase.ts             # Supabase 클라이언트
-│   │   ├── hide-content.tsx        # 텍스트 가리기 로직
+│   │   ├── content-meta.tsx        # 텍스트 가리기 로직
 │   │   ├── error-code-ko.ts        # 에러 코드 한국어 맵핑
 │   │   ├── random-nickname.ts
 │   │   ├── supabase.ts
@@ -163,11 +163,12 @@ export type ContentMeta = {
 
 - `adjustContentMeta`: 텍스트 추가/삭제 시 숨김 범위 자동 업데이트
   - 커서 위치에 따라 before(전체 이동) / overlap(끝점 조정) / after(변경 없음) 처리
-- `normalizeContentMeta`: 겹치는 범위 자동 병합
+- `normalizeContentMeta`: 겹치는 범위 자동 병합 및 정렬
 
 **3. 실시간 시각화**
 
-- `renderTextareaOverlay`: 편집 중에도 숨김 처리된 부분을 배경색으로 표시
+- `splitContentByMeta`: content를 text/hidden 타입으로 분리하여 렌더링을 위한 구조 생성
+- `ContentMeta 기반 렌더링`: 분리된 데이터를 기반으로 컴포넌트에서 하이라이트/숨김 상태를 제어
 
 **4. 결과**
 
