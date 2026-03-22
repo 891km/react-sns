@@ -25,7 +25,7 @@ export default function PostTextContent({
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {post.content && (
         <p className="text-base/6.5 whitespace-pre-line">
           {!isExtended ? (
@@ -54,7 +54,7 @@ export default function PostTextContent({
           )}
         </p>
       )}
-    </>
+    </div>
   );
 }
 

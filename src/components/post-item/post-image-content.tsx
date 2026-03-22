@@ -1,3 +1,5 @@
+import ImageHider from "@/components/status/image-hider";
+import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -6,22 +8,27 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useOpenPostImagesViewerModal } from "@/store/post-images-viewer-modal";
-import type { PostType } from "@/types/types";
-import { useState } from "react";
+import type { ImagesMeta, PostType } from "@/types/types";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useEffect, useState, type MouseEvent } from "react";
 
 export default function PostImageContent({
   postId,
   type,
   imageUrls,
+  imagesMeta,
 }: {
   postId: number;
   type: PostType;
   imageUrls: string[];
+  imagesMeta: ImagesMeta;
 }) {
   const openViewerModal = useOpenPostImagesViewerModal();
   const [isLoadedImages, setIsLoadedImages] = useState<boolean[]>(
     new Array(imageUrls.length).fill(false),
   );
+  const [isHidden, setIsHidden] = useState(imagesMeta);
+
   const handleSetIsLoadedImages = (index: number) => {
     setIsLoadedImages((prev) => {
       const loaded = [...prev];
@@ -30,55 +37,99 @@ export default function PostImageContent({
     });
   };
 
-  const handleImageClick = (index: number) => {
+  const handleImageClick = (e: MouseEvent<HTMLDivElement>, index: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (isHidden) return;
     openViewerModal({ postId, selectedIndex: index });
   };
 
+  const handleShowImageClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsHidden((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setIsHidden(imagesMeta);
+  }, [imagesMeta]);
+
   return (
-    <Carousel
-      opts={{
-        align: "start",
-      }}
-    >
-      <CarouselContent>
-        {imageUrls.map((imageUrl, index) => (
-          <CarouselItem
-            key={imageUrl}
-            className={cn(
-              "w-fit shrink-0 basis-auto cursor-pointer",
-              type === "DETAIL" && imageUrls.length === 1 && "w-full",
-              index === imageUrls.length - 1 && "mr-20",
-            )}
-            onClick={() => handleImageClick(index)}
-          >
-            <div
+    <div className="flex flex-col gap-2">
+      <Carousel
+        opts={{
+          align: "start",
+        }}
+      >
+        <CarouselContent>
+          {imageUrls.map((imageUrl, index) => (
+            <CarouselItem
+              key={imageUrl}
               className={cn(
-                "relative overflow-hidden rounded-sm border",
-                "aspect-square h-auto w-[70vw] max-w-80",
-                "sm:w-[40vw] sm:max-w-74",
-                type === "DETAIL" && "aspect-auto sm:w-[50vw]",
-                type === "DETAIL" &&
-                  imageUrls.length === 1 &&
-                  "w-full max-w-full sm:w-full sm:max-w-full",
+                "w-fit shrink-0 basis-auto cursor-pointer",
+                type === "DETAIL" && imageUrls.length === 1 && "w-full",
+                index === imageUrls.length - 1 && "mr-20",
               )}
+              onClick={(e: MouseEvent<HTMLDivElement>) =>
+                handleImageClick(e, index)
+              }
             >
-              {!isLoadedImages[index] && <Skeleton className="h-full w-full" />}
-              <img
-                src={imageUrl}
-                alt={`게시된 이미지 ${index}`}
-                loading="lazy"
+              <div
                 className={cn(
-                  "transition-opacity duration-300",
-                  "h-full w-full object-cover",
-                  type === "DETAIL" && "object-contain",
-                  isLoadedImages[index] ? "opacity-100" : "opacity-50",
+                  "relative overflow-hidden rounded-sm border",
+                  "aspect-square h-auto w-76",
+                  type === "DETAIL" &&
+                    "aspect-auto w-auto max-w-[70vw] min-w-60 md:w-auto md:max-w-xl",
+                  type === "DETAIL" &&
+                    imageUrls.length === 1 &&
+                    "w-full max-w-full md:w-full md:max-w-full",
                 )}
-                onLoad={() => handleSetIsLoadedImages(index)}
-              />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
+              >
+                {!isLoadedImages[index] && (
+                  <Skeleton className="z-100 h-full w-full" />
+                )}
+                <ImageHider isHidden={isHidden} />
+                <img
+                  src={imageUrl}
+                  alt={`게시된 이미지 ${index}`}
+                  loading="lazy"
+                  className={cn(
+                    "transition-opacity duration-300",
+                    "h-full w-full object-cover",
+                    type === "DETAIL" && "object-contain",
+                    isLoadedImages[index] ? "opacity-100" : "opacity-50",
+                  )}
+                  onLoad={() => handleSetIsLoadedImages(index)}
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      {imagesMeta && (
+        <Button
+          size="sm"
+          variant="ghost"
+          className="w-fit"
+          onClick={(e: MouseEvent<HTMLButtonElement>) =>
+            handleShowImageClick(e)
+          }
+        >
+          {isHidden ? (
+            <>
+              <EyeIcon />
+              이미지 보기
+            </>
+          ) : (
+            <>
+              <EyeOffIcon />
+              이미지 가리기
+            </>
+          )}
+        </Button>
+      )}
+    </div>
   );
 }

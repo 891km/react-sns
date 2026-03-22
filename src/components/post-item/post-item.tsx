@@ -23,7 +23,7 @@ import PostDeleteButton from "@/components/post-item/post-delete-button";
 import PostLikeButton from "@/components/post-item/post-like-button";
 import PostCommentButton from "@/components/post-item/post-comment-button";
 import { cn } from "@/lib/utils";
-import type { PostType } from "@/types/types";
+import type { Post, PostType } from "@/types/types";
 import PostTextContent from "@/components/post-item/post-text-content";
 
 export default function PostItem({
@@ -75,25 +75,13 @@ export default function PostItem({
         </DropdownMenu>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {type === "FEED" ? (
-          <Link
-            to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}
-            className="flex flex-col gap-4"
-          >
-            <PostTextContent post={post} type={type} />
-          </Link>
-        ) : (
-          <PostTextContent post={post} type={type} />
-        )}
-        {post.image_urls && (
-          <PostImageContent
-            postId={post.id}
-            type={type}
-            imageUrls={post.image_urls}
-          />
-        )}
-      </div>
+      {type === "FEED" ? (
+        <Link to={ROUTES.POST_DETAIL.replace(":postId", String(post.id))}>
+          <PostContent post={post} type={type} />
+        </Link>
+      ) : (
+        <PostContent post={post} type={type} />
+      )}
 
       <div className="flex gap-2">
         <PostLikeButton
@@ -105,6 +93,22 @@ export default function PostItem({
           <PostCommentButton postId={post.id} count={post.commentCount} />
         )}
       </div>
+    </div>
+  );
+}
+
+function PostContent({ post, type }: { post: Post; type: PostType }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {post.content && <PostTextContent post={post} type={type} />}
+      {post.image_urls && (
+        <PostImageContent
+          postId={post.id}
+          type={type}
+          imageUrls={post.image_urls}
+          imagesMeta={post.metadata?.images_hidden}
+        />
+      )}
     </div>
   );
 }

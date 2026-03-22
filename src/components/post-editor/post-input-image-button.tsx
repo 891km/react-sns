@@ -54,6 +54,7 @@ export default function PostInputImageButton() {
               variant="outline"
               onClick={handleFileInputClick}
               disabled={isPending || isEdit}
+              className="w-full sm:w-fit"
             >
               <ImageIcon />
               이미지 추가
